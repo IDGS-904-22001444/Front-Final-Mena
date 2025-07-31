@@ -1,0 +1,247 @@
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100"
+>
+  <!-- Container principal responsivo -->
+  <div class="min-h-screen flex">
+    <!-- Panel izquierdo - Información (oculto en móviles) -->
+    <div
+      class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-500 via-green-600 to-blue-600 relative overflow-hidden"
+    >
+      <!-- Decoraciones de fondo -->
+      <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+      <div
+        class="absolute top-10 left-10 w-32 h-32 bg-white bg-opacity-10 rounded-full blur-xl"
+      ></div>
+      <div
+        class="absolute bottom-20 right-20 w-48 h-48 bg-white bg-opacity-10 rounded-full blur-2xl"
+      ></div>
+
+      <!-- Contenido del panel -->
+      <div
+        class="relative z-10 flex flex-col justify-center items-center p-12 text-white"
+      >
+        <div class="mb-8">
+          <mat-icon class="text-8xl md:text-9xl opacity-90"
+            >person_add</mat-icon
+          >
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 text-center">
+          Únete a ReptiTrack
+        </h1>
+        <p
+          class="text-xl md:text-2xl text-center mb-8 opacity-90 leading-relaxed"
+        >
+          Crea tu cuenta y comienza a monitorear el hábitat de tus reptiles
+        </p>
+        <div class="grid grid-cols-1 gap-4 text-center">
+          <div class="flex items-center justify-center space-x-3">
+            <mat-icon class="text-2xl">monitoring</mat-icon>
+            <span class="text-lg">Monitoreo 24/7</span>
+          </div>
+          <div class="flex items-center justify-center space-x-3">
+            <mat-icon class="text-2xl">notifications</mat-icon>
+            <span class="text-lg">Alertas Inteligentes</span>
+          </div>
+          <div class="flex items-center justify-center space-x-3">
+            <mat-icon class="text-2xl">analytics</mat-icon>
+            <span class="text-lg">Reportes Detallados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel derecho - Formulario -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8">
+      <div class="w-full max-w-md lg:max-w-lg xl:max-w-xl">
+        <!-- Header móvil (solo visible en pantallas pequeñas) -->
+        <div class="lg:hidden text-center mb-8">
+          <mat-icon class="text-6xl text-green-600 mb-4">person_add</mat-icon>
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">ReptiTrack IoT</h1>
+          <p class="text-gray-600">Crea tu cuenta</p>
+        </div>
+
+        <!-- Card del formulario -->
+        <div
+          class="bg-white rounded-2xl lg:rounded-3xl shadow-xl lg:shadow-2xl overflow-hidden"
+        >
+          <!-- Header del formulario -->
+          <div
+            class="bg-gradient-to-r from-green-500 to-blue-600 p-6 md:p-8 text-center"
+          >
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
+              Crear Cuenta
+            </h2>
+            <p class="text-green-100 text-sm md:text-base">
+              Únete a la comunidad ReptiTrack
+            </p>
+          </div>
+
+          <!-- Formulario -->
+          <form
+            class="p-6 md:p-8 lg:p-10"
+            [formGroup]="registerForm"
+            (ngSubmit)="register()"
+          >
+            <!-- Mostrar errores solo si existen -->
+            <div *ngIf="errors && errors.length > 0" class="mb-6">
+              <div
+                *ngFor="let error of errors; trackBy: trackByFn"
+                class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-2 text-sm flex items-center"
+              >
+                <mat-icon class="text-red-500 mr-2 text-lg">error</mat-icon>
+                {{ error.description }}
+              </div>
+            </div>
+
+            <!-- Campo Email -->
+            <div class="mb-4">
+              <div class="relative">
+                <input
+                  type="email"
+                  formControlName="email"
+                  placeholder="ejemplo@correo.com"
+                  class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                />
+                <mat-icon
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                  >email</mat-icon
+                >
+                <label
+                  class="absolute -top-2 left-3 bg-white px-2 text-sm text-gray-600"
+                  >Correo Electrónico</label
+                >
+              </div>
+            </div>
+
+            <!-- Campo Full Name -->
+            <div class="mb-4">
+              <div class="relative">
+                <input
+                  type="text"
+                  formControlName="fullName"
+                  placeholder="Nombre completo"
+                  class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                />
+                <mat-icon
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                  >person</mat-icon
+                >
+                <label
+                  class="absolute -top-2 left-3 bg-white px-2 text-sm text-gray-600"
+                  >Nombre Completo</label
+                >
+              </div>
+            </div>
+
+            <!-- Campo Password -->
+            <div class="mb-4">
+              <div class="relative">
+                <input
+                  [type]="passwordHide ? 'password' : 'text'"
+                  formControlName="password"
+                  placeholder="Ingresa tu contraseña"
+                  class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                />
+                <mat-icon
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                  >lock</mat-icon
+                >
+                <mat-icon
+                  (click)="passwordHide = !passwordHide"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-green-500 transition-colors"
+                >
+                  {{ passwordHide ? "visibility_off" : "visibility" }}
+                </mat-icon>
+                <label
+                  class="absolute -top-2 left-3 bg-white px-2 text-sm text-gray-600"
+                  >Contraseña</label
+                >
+              </div>
+            </div>
+
+            <!-- Campo Confirm Password -->
+            <div class="mb-6">
+              <div class="relative">
+                <input
+                  [type]="confirmPasswordHide ? 'password' : 'text'"
+                  formControlName="confirmPassword"
+                  placeholder="Confirma tu contraseña"
+                  class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                />
+                <mat-icon
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                  >lock_outline</mat-icon
+                >
+                <mat-icon
+                  (click)="confirmPasswordHide = !confirmPasswordHide"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-green-500 transition-colors"
+                >
+                  {{ confirmPasswordHide ? "visibility_off" : "visibility" }}
+                </mat-icon>
+                <label
+                  class="absolute -top-2 left-3 bg-white px-2 text-sm text-gray-600"
+                  >Confirmar Contraseña</label
+                >
+              </div>
+
+              <!-- Mensaje de error para contraseñas que no coinciden -->
+              <div
+                *ngIf="
+                  registerForm.hasError('passwordMismatch') &&
+                  (registerForm.get('confirmPassword')?.dirty ||
+                    registerForm.get('confirmPassword')?.touched)
+                "
+                class="text-red-500 text-sm mt-2 ml-1 flex items-center"
+              >
+                <mat-icon class="text-red-500 mr-1 text-sm">error</mat-icon>
+                Las contraseñas no coinciden
+              </div>
+            </div>
+
+            <!-- Botón Register -->
+            <button
+              type="submit"
+              [disabled]="!registerForm.valid"
+              class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold py-4 md:py-5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:transform-none mb-8 text-base md:text-lg"
+            >
+              <mat-icon class="mr-2">person_add</mat-icon>
+              Crear Cuenta
+            </button>
+
+            <!-- Divider -->
+            <div class="relative mb-8">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+              </div>
+              <div class="relative flex justify-center text-sm md:text-base">
+                <span class="px-4 bg-white text-gray-500">o</span>
+              </div>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <span class="text-gray-600 text-sm md:text-base">
+                ¿Ya tienes una cuenta?
+              </span>
+              <a
+                routerLink="/login"
+                class="text-green-600 hover:text-green-700 font-bold transition-colors hover:underline text-sm md:text-base"
+              >
+                Inicia sesión aquí
+              </a>
+            </div>
+          </form>
+
+          <!-- Footer -->
+          <div
+            class="bg-gray-50 px-6 md:px-8 lg:px-10 py-4 text-center border-t"
+          >
+            <p class="text-xs md:text-sm text-gray-500">
+              © 2025 ReptiTrack IoT. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

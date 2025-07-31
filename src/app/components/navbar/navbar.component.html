@@ -1,0 +1,80 @@
+<mat-toolbar class="custom-toolbar">
+  <button mat-icon-button [matMenuTriggerFor]="mainMenu" class="menu-btn">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a routerLink="/" class="brand-title">ReptiTrack</a>
+  <span class="toolbar-spacer"></span>
+
+  <ng-container *ngIf="isLoggedIn(); else loggedOut">
+    <div *ngIf="authService.getUserDetail() as userDetail">
+      <button mat-button [matMenuTriggerFor]="userMenu" class="profile-btn">
+        <div class="avatar">
+          {{ userDetail!.fullName[0].toUpperCase() }}
+        </div>
+        <div class="profile-info">
+          <span class="profile-name">{{ userDetail?.fullName }}</span>
+          <span class="profile-role">{{ userDetail?.roles }}</span>
+        </div>
+      </button>
+      <mat-menu #userMenu="matMenu" xPosition="after" yPosition="below">
+        <button [routerLink]="['account', userDetail.id]" mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>Ver perfil</span>
+        </button>
+        <button (click)="logout()" mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+        <button [routerLink]="['change-password']" mat-menu-item>
+          <mat-icon>password</mat-icon>
+          <span>Cambiar contraseña</span>
+        </button>
+      </mat-menu>
+    </div>
+  </ng-container>
+  <ng-template #loggedOut>
+    <div class="auth-links">
+      <a mat-button routerLink="/login">Inicio de sesión</a>
+      <a mat-button routerLink="/register">Registro</a>
+    </div>
+  </ng-template>
+</mat-toolbar>
+
+<mat-menu #mainMenu="matMenu">
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/dashboard">
+    <mat-icon>dashboard</mat-icon>
+    <span>Dashboard</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/users">
+    <mat-icon>groups</mat-icon>
+    <span>Usuarios</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/roles">
+    <mat-icon>settings</mat-icon>
+    <span>Roles</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin') || authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/Manuales">
+    <mat-icon>folder</mat-icon>
+    <span>Manuales</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/providers">
+    <mat-icon>local_shipping</mat-icon>
+    <span>Proveedores</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/products">
+    <mat-icon>inventory_2</mat-icon>
+    <span>Productos</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/purchases">
+    <mat-icon>shopping_cart</mat-icon>
+    <span>Compras</span>
+  </button>
+  <button mat-menu-item routerLink="/faqs">
+    <mat-icon>help</mat-icon>
+    <span>FAQs</span>
+  </button>
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/faqs-admin">
+    <mat-icon>admin_panel_settings</mat-icon>
+    <span>FAQs Admin</span>
+  </button>
+</mat-menu>

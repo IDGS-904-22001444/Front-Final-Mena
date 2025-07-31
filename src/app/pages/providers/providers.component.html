@@ -1,0 +1,42 @@
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Gestión de Proveedores</h1>
+            <p class="mt-2 text-gray-600">Administra la información de tus proveedores</p>
+        </div>
+
+        <!-- Layout principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulario -->
+            <div class="lg:col-span-1">
+                <app-provider-form
+                    [errorMessage]="errorMessage"
+                    [provider]="provider"
+                    [isEditing]="isEditing"
+                    (addProvider)="createProvider($event)"
+                    (updateProvider)="updateProvider($event)"
+                />
+                
+                @if(isEditing) {
+                    <div class="mt-4">
+                        <button 
+                            (click)="resetForm()"
+                            class="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                            Cancelar Edición
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <!-- Lista de proveedores -->
+            <div class="lg:col-span-2">
+                <app-provider-list
+                    [providers]="providers$ | async"
+                    (editProvider)="editProvider($event)"
+                    (deleteProvider)="deleteProvider($event)"
+                />
+            </div>
+        </div>
+    </div>
+</div>

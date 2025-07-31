@@ -1,0 +1,104 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
+      <p class="text-gray-600 mt-2">Administra los usuarios del sistema</p>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="px-6 py-4 bg-gray-50 border-b">
+        <h2 class="text-xl font-semibold text-gray-800">Lista de Usuarios</h2>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Nombre
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Roles
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (user of user$ | async; track user.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                      <div class="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">
+                        {{ user.fullName.charAt(0).toUpperCase() }}
+                      </div>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ user.fullName }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ user.email }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex flex-wrap gap-1">
+                    @for (role of user.roles; track role) {
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
+                            [ngClass]="{
+                              'bg-red-100 text-red-800': role === 'Admin',
+                              'bg-green-100 text-green-800': role === 'Cliente Autorizado',
+                              'bg-blue-100 text-blue-800': role !== 'Admin' && role !== 'Cliente Autorizado'
+                            }">
+                        {{ role }}
+                      </span>
+                    }
+                    @if (user.roles.length === 0) {
+                      <span class="text-gray-500 text-sm">Sin rol asignado</span>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div class="flex space-x-3">
+                    @if (canEditUser(user)) {
+                      <button 
+                        type="button"
+                        (click)="editUser(user)" 
+                        class="text-blue-600 hover:text-blue-900 flex items-center transition-colors"
+                        title="Editar usuario">
+                        <mat-icon class="w-5 h-5">edit</mat-icon>
+                      </button>
+                    }
+                    @if (canDeleteUser(user)) {
+                      <button 
+                        type="button"
+                        (click)="deleteUser(user)" 
+                        class="text-red-600 hover:text-red-900 flex items-center transition-colors"
+                        title="Eliminar usuario">
+                        <mat-icon class="w-5 h-5">delete</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        
+        @if (!(user$ | async) || (user$ | async)?.length === 0) {
+          <div class="text-center py-12">
+            <mat-icon class="w-12 h-12 mx-auto text-gray-400 mb-4">people</mat-icon>
+            <p class="text-gray-500">No hay usuarios registrados</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

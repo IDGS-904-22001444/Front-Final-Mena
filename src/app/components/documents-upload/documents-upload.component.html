@@ -1,0 +1,69 @@
+<!-- filepath: src/app/components/document-upload/document-upload.component.html -->
+<div class="bg-white rounded-lg shadow-md p-6">
+  <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+    <mat-icon class="mr-2 text-green-500">cloud_upload</mat-icon>
+    Subir Documento
+  </h2>
+
+  <!-- Área de drag and drop -->
+  <div
+    class="border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer"
+    [ngClass]="{
+      'border-green-400 bg-green-50': dragOver,
+      'border-gray-300 hover:border-green-400 hover:bg-gray-50': !dragOver
+    }"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="triggerFileInput()"
+  >
+    <mat-icon class="text-4xl text-gray-400 mb-4">description</mat-icon>
+    <p class="text-gray-600 mb-2">
+      Arrastra y suelta tu archivo aquí, o 
+      <span class="text-green-600 font-medium">haz clic para seleccionar</span>
+    </p>
+    <p class="text-sm text-gray-500">
+      Formatos soportados: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG
+    </p>
+  </div>
+
+  <!-- Input de archivo oculto -->
+  <input
+    type="file"
+    id="fileInput"
+    class="hidden"
+    (change)="onFileSelected($event)"
+    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+  />
+
+  <!-- Información del archivo seleccionado -->
+  @if (selectedFile) {
+    <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <mat-icon class="text-blue-600 mr-2">attach_file</mat-icon>
+          <div>
+            <p class="font-medium text-gray-800">{{ selectedFile.name }}</p>
+            <p class="text-sm text-gray-600">{{ formatFileSize(selectedFile.size) }}</p>
+          </div>
+        </div>
+        <mat-icon class="text-green-600">check_circle</mat-icon>
+      </div>
+    </div>
+  }
+
+  <!-- Barra de progreso -->
+  @if (isUploading) {
+    <div class="mt-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-600">Subiendo archivo...</span>
+        <span class="text-sm text-gray-600">{{ uploadProgress }}%</span>
+      </div>
+      <mat-progress-bar 
+        mode="determinate" 
+        [value]="uploadProgress"
+        class="rounded-full"
+      ></mat-progress-bar>
+    </div>
+  }
+</div>

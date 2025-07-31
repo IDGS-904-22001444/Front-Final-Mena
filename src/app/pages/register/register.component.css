@@ -1,0 +1,31 @@
+
+/* Estilos personalizados para mat-select */
+::ng-deep .mat-mdc-select {
+  border: none !important;
+  background: transparent !important;
+}
+
+::ng-deep .mat-mdc-select-trigger {
+  border: none !important;
+  background: transparent !important;
+  height: 100% !important;
+}
+
+::ng-deep .mat-mdc-select-value {
+  color: #374151 !important;
+  font-size: 1rem !important;
+}
+
+::ng-deep .mat-mdc-select-placeholder {
+  color: #9CA3AF !important;
+}
+
+::ng-deep .mat-mdc-select-arrow {
+  color: #10B981 !important;
+}
+
+/* Estilos para el estado focus */
+::ng-deep .mat-mdc-select:focus .mat-mdc-select-trigger {
+  background-color: white !important;
+}
+

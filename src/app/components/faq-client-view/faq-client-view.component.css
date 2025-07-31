@@ -1,0 +1,18 @@
+/* Personalización del expansion panel */
+::ng-deep .mat-expansion-panel {
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+  height: auto !important;
+  padding: 0 !important;
+}
+
+::ng-deep .mat-expansion-panel-header:hover {
+  background: rgba(34, 197, 94, 0.05) !important;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 !important;
+}

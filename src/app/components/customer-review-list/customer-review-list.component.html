@@ -1,0 +1,22 @@
+<div *ngFor="let review of reviews" class="mb-4">
+  <div class="p-4 border-b">
+    <div class="flex items-center gap-2">
+      <span class="font-bold">Cliente #{{ review.clientId }}</span>
+      <span class="text-yellow-500">Calificación: {{ review.rating }}/5</span>
+      <span class="text-gray-400 text-xs">{{ review.createdAt | date:'short' }}</span>
+    </div>
+    <div class="my-2">{{ review.comment }}</div>
+    <div *ngIf="review.reply" class="bg-green-50 p-2 rounded">
+      <span class="font-semibold text-green-700">Respuesta:</span> {{ review.reply }}
+      <span class="text-xs text-gray-400 ml-2">{{ review.repliedAt | date:'short' }}</span>
+    </div>
+    <button *ngIf="!review.reply" (click)="selectReview(review)" class="text-blue-600 hover:underline mt-2">Responder</button>
+  </div>
+</div>
+
+<app-customer-review-reply-form
+  *ngIf="selectedReview"
+  [review]="selectedReview"
+  (reply)="onReply($event)"
+  (cancel)="selectedReview = null">
+</app-customer-review-reply-form>

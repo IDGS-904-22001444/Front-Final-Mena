@@ -1,0 +1,169 @@
+/* --- NAVBAR Y TOOLBAR --- */
+.navbar-container {
+  width: 100vw;
+  min-height: 64px;
+}
+
+.custom-toolbar {
+  background: #0e5f2c;
+  color: #fff;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  position: relative;
+  z-index: 10;
+}
+
+.menu-btn mat-icon {
+  color: #fff !important;
+}
+
+.brand-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+/* --- USUARIO (AVATAR, NOMBRE Y ROL) --- */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 0 8px 0 0;
+  min-width: 0;
+}
+
+.avatar {
+  background: #e57373;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-right: 8px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  color: #fff;
+  margin-right: 8px;
+}
+
+.profile-role {
+  font-size: 0.92rem;
+  font-weight: 400;
+  opacity: 0.85;
+  color: #c8e6c9;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+/* --- ENLACES DE AUTENTICACIÓN --- */
+.auth-links a {
+  color: #fff;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+/* --- SIDENAV (SI LO USAS) --- */
+.custom-sidenav {
+  background: #f8fafc;
+  border-top-right-radius: 32px;
+  border-bottom-right-radius: 32px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.07);
+  padding-top: 24px;
+  width: 240px;
+}
+
+.sidenav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.custom-sidenav a[mat-button] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #1e293b;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 10px 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.custom-sidenav a[mat-button]:hover,
+.custom-sidenav a[mat-button].active-link {
+  background: #e0f2f1;
+  color: #1976d2;
+}
+
+.custom-sidenav mat-icon {
+  font-size: 1.4rem;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+  .custom-toolbar {
+    padding: 0 8px;
+  }
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  .profile-info {
+    font-size: 0.95rem;
+  }
+  .custom-sidenav {
+    width: 180px;
+    border-radius: 0 16px 16px 0;
+  }
+  .navbar-container {
+    height: 100vh;
+    width: 100vw;
+  }
+  .profile-btn {
+    gap: 8px;
+    padding: 0 4px 0 0;
+  }
+  .user-profile {
+    gap: 6px;
+  }
+}

@@ -1,0 +1,17 @@
+/* Opción 3: Blanco puro */
+.custom-white-input .mdc-text-field--filled {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+}
+
+.custom-white-input .mdc-text-field--filled:hover {
+    background-color: #f9fafb !important;
+    border-color: #22c55e !important;
+}
+
+.custom-white-input .mdc-text-field--focused {
+    background-color: #ffffff !important;
+    border-color: #16a34a !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}

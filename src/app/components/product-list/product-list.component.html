@@ -1,0 +1,57 @@
+<div class="space-y-4">
+  @if(products && products.length > 0) {
+    @for(product of products; track product.productId) {
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold text-gray-800">{{ product.name }}</h3>
+              <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="getStatusBadgeClass(product.status)">
+                {{ getStatusLabel(product.status) }}
+              </span>
+            </div>
+            
+            <p class="text-gray-600 mb-3 leading-relaxed">{{ product.description }}</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col">
+                <div class="text-2xl font-bold text-green-600">
+                  {{ formatPrice(product.salePrice) }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  Stock: {{ product.stock }} unidades
+                </div>
+              </div>
+              
+              <div class="flex space-x-2">
+                <button 
+                  (click)="onEdit(product)"
+                  class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-md hover:shadow-lg"
+                  title="Editar producto"
+                >
+                  <mat-icon class="text-sm">edit</mat-icon>
+                  <span class="hidden sm:inline">Editar</span>
+                </button>
+                
+                <button 
+                  (click)="onDelete(product.productId)"
+                  class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-md hover:shadow-lg"
+                  title="Eliminar producto"
+                >
+                  <mat-icon class="text-sm">delete</mat-icon>
+                  <span class="hidden sm:inline">Eliminar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="text-center py-12">
+      <mat-icon class="text-6xl text-gray-400 mb-4">inventory_2</mat-icon>
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay productos</h3>
+      <p class="text-gray-500">Crea tu primer producto para comenzar</p>
+    </div>
+  }
+</div>

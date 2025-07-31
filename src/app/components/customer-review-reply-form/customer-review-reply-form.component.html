@@ -1,0 +1,8 @@
+<div class="p-4 bg-gray-50 rounded mt-4">
+  <h3 class="font-bold mb-2">Responder a comentario</h3>
+  <textarea [(ngModel)]="replyText" rows="3" class="w-full border rounded p-2" placeholder="Escribe tu respuesta..."></textarea>
+  <div class="flex gap-2 mt-2">
+    <button type="button" (click)="sendReply()" class="bg-green-600 text-white px-4 py-2 rounded">Enviar</button>
+    <button type="button" (click)="cancel.emit()" class="bg-gray-300 px-4 py-2 rounded">Cancelar</button>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="overflow-x-auto">
+  <div *ngIf="purchaseDetails && purchaseDetails.length > 0; else noPurchaseDetails">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Material
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Compra
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Cantidad
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Precio Unit.
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Subtotal
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Estado
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Acciones
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let purchaseDetail of purchaseDetails; trackBy: trackByPurchaseDetailId" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div>
+              <div class="text-sm font-medium text-gray-900">{{ purchaseDetail.rawMaterial.name }}</div>
+              <div class="text-sm text-gray-500">{{ purchaseDetail.rawMaterial.description }}</div>
+              <div class="text-xs text-gray-400">{{ purchaseDetail.rawMaterial.unitOfMeasure }}</div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">Compra #{{ purchaseDetail.purchaseId }}</div>
+            <div class="text-sm text-gray-500">{{ purchaseDetail.purchase.purchaseDate | date:'short' }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">{{ purchaseDetail.quantity }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">{{ formatPrice(purchaseDetail.unitPrice) }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900">{{ formatPrice(purchaseDetail.subtotal) }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
+                  [ngClass]="getStatusClass(purchaseDetail.status)">
+              {{ getStatusText(purchaseDetail.status) }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-3">
+              <button 
+                type="button"
+                (click)="edit(purchaseDetail)" 
+                class="text-blue-600 hover:text-blue-900 flex items-center transition-colors"
+                title="Editar detalle">
+                <mat-icon class="w-5 h-5">edit</mat-icon>
+              </button>
+              <button 
+                type="button"
+                (click)="delete(purchaseDetail.id)" 
+                class="text-red-600 hover:text-red-900 flex items-center transition-colors"
+                title="Eliminar detalle">
+                <mat-icon class="w-5 h-5">delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noPurchaseDetails>
+    <div class="text-center py-12">
+      <mat-icon class="w-12 h-12 mx-auto text-gray-400 mb-4">shopping_cart</mat-icon>
+      <p class="text-gray-500">No hay detalles de compra registrados</p>
+    </div>
+  </ng-template>
+</div>

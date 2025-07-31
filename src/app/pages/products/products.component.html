@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Gestión de Productos</h1>
+      <p class="text-gray-600 mt-2">
+        Administra el catálogo de productos ReptiTrack
+      </p>
+    </div>
+
+    <!-- Layout de Cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Formulario para crear/editar producto -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+        <div class="px-6 py-4 bg-gradient-to-r" 
+             [ngClass]="isEditing ? 'from-blue-600 to-blue-700' : 'from-green-600 to-green-700'">
+          <h2 class="text-xl font-bold text-white flex items-center">
+            <mat-icon class="mr-3">{{ isEditing ? 'edit' : 'add_circle' }}</mat-icon>
+            {{ isEditing ? 'Editar' : 'Crear Nuevo' }} Producto
+          </h2>
+        </div>
+        <div class="p-6">
+          <app-product-form
+            [errorMessage]="errorMessage"
+            [isEditing]="isEditing"
+            [editingProduct]="editingProduct"
+            (addProduct)="createProduct($event)"
+            (updateProduct)="updateProduct($event)"
+            (cancelEdit)="cancelEdit()"
+          />
+        </div>
+      </div>
+
+      <!-- Lista de productos -->
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+        <div class="px-6 py-4 bg-gradient-to-r from-amber-600 to-amber-700">
+          <h2 class="text-xl font-bold text-white flex items-center">
+            <mat-icon class="mr-3">inventory</mat-icon>
+            Productos Existentes
+          </h2>
+        </div>
+        <div class="p-6 max-h-96 lg:max-h-[600px] overflow-y-auto">
+          <app-product-list
+            [products]="products$ | async"
+            (editProduct)="editProduct($event)"
+            (deleteProduct)="deleteProduct($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas del inventario -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      <div class="flex items-center mb-4">
+        <mat-icon class="text-green-700 mr-3">analytics</mat-icon>
+        <h3 class="text-lg font-semibold text-gray-800">
+          Estadísticas del Inventario
+        </h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-green-700 font-medium">Total de Productos</p>
+              <p class="text-2xl font-bold text-green-800">
+                {{ (products$ | async)?.length || 0 }}
+              </p>
+            </div>
+            <mat-icon class="text-green-600">inventory_2</mat-icon>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-blue-700 font-medium">Productos Activos</p>
+              <p class="text-2xl font-bold text-blue-800">
+                {{ getProductCountByStatus(products$ | async, 1) }}
+              </p>
+            </div>
+            <mat-icon class="text-blue-600">check_circle</mat-icon>
+          </div>
+        </div>
+
+        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-red-700 font-medium">Productos Inactivos</p>
+              <p class="text-2xl font-bold text-red-800">
+                {{ getProductCountByStatus(products$ | async, 0) }}
+              </p>
+            </div>
+            <mat-icon class="text-red-600">remove_circle</mat-icon>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-purple-700 font-medium">Total en Stock</p>
+              <p class="text-2xl font-bold text-purple-800">
+                {{ getTotalStock(products$ | async) }}
+              </p>
+            </div>
+            <mat-icon class="text-purple-600">inventory</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

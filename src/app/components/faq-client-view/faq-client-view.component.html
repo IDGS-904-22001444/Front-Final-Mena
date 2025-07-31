@@ -1,0 +1,98 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="bg-white rounded-full p-6 w-24 h-24 mx-auto mb-6 shadow-lg">
+        <mat-icon class="text-green-600 text-4xl">help_center</mat-icon>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Preguntas Frecuentes</h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Encuentra respuestas rápidas a las preguntas más comunes sobre ReptiTrack IoT
+      </p>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar en preguntas frecuentes..."
+          class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+        />
+        <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">
+          search
+        </mat-icon>
+        @if(searchTerm) {
+          <button
+            (click)="clearSearch()"
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <mat-icon>clear</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Lista de FAQs -->
+    <div class="space-y-4">
+      @for (faq of filterFaqs(faqs$ | async); track faq.id) {
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+          <mat-expansion-panel class="shadow-none">
+            <mat-expansion-panel-header class="px-6 py-4">
+              <mat-panel-title class="text-lg font-semibold text-gray-800 flex items-center">
+                <mat-icon class="text-green-600 mr-3">help_outline</mat-icon>
+                {{ faq.question }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div class="px-6 pb-6">
+              <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-green-500">
+                <div class="flex items-start">
+                  <mat-icon class="text-green-600 mr-3 mt-1">lightbulb</mat-icon>
+                  <p class="text-gray-700 leading-relaxed">{{ faq.answer }}</p>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      } @empty {
+        <div class="text-center py-16">
+          <div class="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+            <mat-icon class="text-gray-400 text-4xl">search_off</mat-icon>
+          </div>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">
+            @if(searchTerm) {
+              No se encontraron resultados
+            } @else {
+              No hay preguntas frecuentes disponibles
+            }
+          </h3>
+          <p class="text-gray-500">
+            @if(searchTerm) {
+              Intenta con otros términos de búsqueda
+            } @else {
+              Las preguntas frecuentes aparecerán aquí cuando estén disponibles
+            }
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Footer de contacto -->
+    <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-xl shadow-lg p-8 text-white text-center mt-12">
+      <h3 class="text-2xl font-bold mb-4">¿No encontraste lo que buscabas?</h3>
+      <p class="text-lg mb-6">Nuestro equipo de soporte está aquí para ayudarte</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button class="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+          <mat-icon class="mr-2">email</mat-icon>
+          Contactar Soporte
+        </button>
+        <button class="border-2 border-white text-white hover:bg-white hover:text-green-600 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+          <mat-icon class="mr-2">phone</mat-icon>
+          Llamar Ahora
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="overflow-x-auto">
+  @if (faqs && faqs.length > 0) {
+    <table class="min-w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Pregunta
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Respuesta
+          </th>
+          @if(isAdmin) {
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Acciones
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @for (faq of faqs; track trackByFaqId($index, faq)) {
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-start">
+                <div class="bg-green-100 p-2 rounded-full mr-3 mt-1">
+                  <mat-icon class="text-green-600 text-sm">help_outline</mat-icon>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900 max-w-md">
+                    {{ truncateText(faq.question, 100) }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900 max-w-lg">
+                {{ truncateText(faq.answer, 150) }}
+              </div>
+            </td>
+            @if(isAdmin) {
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex space-x-3">
+                  <button 
+                    type="button"
+                    (click)="edit(faq)" 
+                    class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors flex items-center"
+                    title="Editar FAQ">
+                    <mat-icon class="w-4 h-4">edit</mat-icon>
+                  </button>
+                  <button 
+                    type="button"
+                    (click)="delete(faq.id)" 
+                    class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors flex items-center"
+                    title="Eliminar FAQ">
+                    <mat-icon class="w-4 h-4">delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <div class="text-center py-16">
+      <div class="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+        <mat-icon class="text-gray-400 text-4xl">help</mat-icon>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No hay preguntas frecuentes</h3>
+      <p class="text-gray-500">
+        @if(isAdmin) {
+          Comienza creando tu primera pregunta frecuente usando el formulario de arriba.
+        } @else {
+          Las preguntas frecuentes aparecerán aquí cuando estén disponibles.
+        }
+      </p>
+    </div>
+  }
+</div>

@@ -1,0 +1,35 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ isAdmin() ? 'Gestión de Manuales' : 'Consulta de Manuales' }}
+      </h1>
+      <p class="mt-2 text-gray-600">
+        {{ isAdmin() ? 'Sube, descarga y administra los manuales del sistema' : 'Consulta y descarga los manuales disponibles' }}
+      </p>
+    </div>
+
+    <!-- Layout principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Formulario de upload - Solo para administradores -->
+      <div class="lg:col-span-1" *ngIf="isAdmin()">
+        <app-document-upload
+          [isUploading]="isUploading"
+          [uploadProgress]="uploadProgress"
+          (fileSelected)="onFileSelected($event)"
+        />
+      </div>
+
+      <!-- Lista de documentos -->
+      <div [class]="isAdmin() ? 'lg:col-span-2' : 'lg:col-span-3'">
+        <app-document-list
+          [documents]="documents$ | async"
+          [isAdmin]="isAdmin()"
+          (downloadDocument)="downloadDocument($event)"
+          (deleteDocument)="deleteDocument($event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="overflow-x-auto">
+  @if (purchases && purchases.length > 0) {
+    <table class="min-w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            #ID
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Proveedor
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Fecha de Compra
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Total
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Estado
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Acciones
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @for (purchase of purchases; track trackByPurchaseId($index, purchase)) {
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  #{{ purchase.id }}
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="bg-green-100 p-2 rounded-full mr-3">
+                  <mat-icon class="text-green-600 text-sm">business</mat-icon>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ purchase.provider?.name || 'Proveedor #' + purchase.providerId }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    {{ purchase.provider?.contactPerson || 'Sin contacto' }}
+                  </div>
+                  <div class="text-xs text-gray-400">
+                    {{ purchase.provider?.email || '' }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">
+                {{ formatDate(purchase.purchaseDate) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-lg font-bold text-gray-900">
+                {{ formatPrice(purchase.total) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full" 
+                    [ngClass]="getStatusClass(purchase.status)">
+                {{ getStatusText(purchase.status) }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex space-x-3">
+                <button 
+                  type="button"
+                  (click)="edit(purchase)" 
+                  class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors flex items-center"
+                  title="Editar compra">
+                  <mat-icon class="w-4 h-4">edit</mat-icon>
+                </button>
+                <button 
+                  type="button"
+                  (click)="delete(purchase.id)" 
+                  class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors flex items-center"
+                  title="Eliminar compra">
+                  <mat-icon class="w-4 h-4">delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <div class="text-center py-16">
+      <div class="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+        <mat-icon class="text-gray-400 text-4xl">shopping_cart</mat-icon>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No hay compras registradas</h3>
+      <p class="text-gray-500">Comienza creando tu primera compra usando el formulario de arriba.</p>
+    </div>
+  }
+</div>

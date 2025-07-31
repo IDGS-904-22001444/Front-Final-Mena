@@ -1,0 +1,155 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Gestión de Roles</h1>
+      <p class="text-gray-600 mt-2">
+        Administra roles y asigna permisos a usuarios
+      </p>
+    </div>
+
+    <!-- Cards Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Formulario para agregar rol -->
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+      >
+        <div class="px-6 py-4 bg-gradient-to-r from-green-600 to-green-700">
+          <h2 class="text-xl font-bold text-white flex items-center">
+            <mat-icon class="mr-3">add_circle</mat-icon>
+            Crear Nuevo Rol
+          </h2>
+        </div>
+        <div class="p-6">
+          <app-role-form
+            [errorMessage]="errorMessage"
+            [role]="role"
+            (addRole)="createRole($event)"
+          />
+        </div>
+      </div>
+
+      <!-- Formulario para asignar rol a usuario -->
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+      >
+        <div class="px-6 py-4 bg-gradient-to-r from-green-500 to-green-600">
+          <h2 class="text-xl font-bold text-white flex items-center">
+            <mat-icon class="mr-3">assignment_ind</mat-icon>
+            Asignar Rol
+          </h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-6">
+            <!-- Select Usuario -->
+            <div class="relative">
+              <select
+                [(ngModel)]="selectedUser"
+                class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Seleccionar Usuario</option>
+                @for (user of users$ | async; track user.id) {
+                <option [value]="user.id">{{ user.fullName }}</option>
+                }
+              </select>
+              <mat-icon
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                >person</mat-icon
+              >
+              <mat-icon
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                >expand_more</mat-icon
+              >
+            </div>
+
+            <!-- Select Rol -->
+            <div class="relative">
+              <select
+                [(ngModel)]="selectedRole"
+                class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Seleccionar Rol</option>
+                @for (role of roles$ | async; track role.id) {
+                <option [value]="role.name">{{ role.name }}</option>
+                }
+              </select>
+              <mat-icon
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+                >security</mat-icon
+              >
+              <mat-icon
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                >expand_more</mat-icon
+              >
+            </div>
+
+            <!-- Botón Asignar -->
+            <button
+              [disabled]="!selectedUser || !selectedRole"
+              class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+              (click)="assignRole()"
+            >
+              <mat-icon>assignment</mat-icon>
+              <span>Asignar Rol</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de roles -->
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+      >
+        <div class="px-6 py-4 bg-gradient-to-r from-amber-600 to-amber-700">
+          <h2 class="text-xl font-bold text-white flex items-center">
+            <mat-icon class="mr-3">list</mat-icon>
+            Roles Existentes
+          </h2>
+        </div>
+        <div class="p-6">
+          <app-role-list
+            [roles]="roles$ | async"
+            (deleteRole)="deleteRole($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      <div class="flex items-center mb-4">
+        <mat-icon class="text-green-700 mr-3">info</mat-icon>
+        <h3 class="text-lg font-semibold text-gray-800">
+          Información del Sistema
+        </h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-green-700 font-medium">Total de Roles</p>
+              <p class="text-2xl font-bold text-green-800">
+                {{ (roles$ | async)?.length || 0 }}
+              </p>
+            </div>
+            <mat-icon class="text-green-600">admin_panel_settings</mat-icon>
+          </div>
+        </div>
+
+        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-600">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-green-700 font-medium">
+                Total de Usuarios
+              </p>
+              <p class="text-2xl font-bold text-green-800">
+                {{ (users$ | async)?.length || 0 }}
+              </p>
+            </div>
+            <mat-icon class="text-green-600">people</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

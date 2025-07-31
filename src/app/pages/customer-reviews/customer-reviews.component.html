@@ -1,0 +1,29 @@
+<div class="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+  <h2 class="text-2xl font-bold mb-4">Deja tu reseña</h2>
+  <form (ngSubmit)="submitReview()" class="mb-8">
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Comentario</label>
+      <textarea [(ngModel)]="comment" name="comment" rows="3" class="w-full border rounded p-2" required></textarea>
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Calificación</label>
+      <select [(ngModel)]="rating" name="rating" class="border rounded p-2">
+        <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{ r }}</option>
+      </select>
+    </div>
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Enviar Reseña</button>
+  </form>
+
+  <h3 class="text-xl font-bold mb-2">Reseñas recientes</h3>
+  <div *ngFor="let review of reviews" class="mb-4 border-b pb-2">
+    <div class="flex items-center gap-2">
+      <span class="font-bold">Cliente #{{ review.clientId }}</span>
+      <span class="text-yellow-500">Calificación: {{ review.rating }}/5</span>
+      <span class="text-gray-400 text-xs">{{ review.createdAt | date:'short' }}</span>
+    </div>
+    <div class="my-2">{{ review.comment }}</div>
+    <div *ngIf="review.reply" class="bg-green-50 p-2 rounded">
+      <span class="font-semibold text-green-700">Respuesta:</span> {{ review.reply }}
+    </div>
+  </div>
+</div>
