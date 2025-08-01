@@ -1,7 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-  @if(isAuthorizedClient()) {
-  <!-- Usuario Cliente Autorizado - Pantalla de catálogo -->
-  <div class="min-h-screen">
+  <div *ngIf="isAuthorizedClient(); else noClient" class="min-h-screen">
     <!-- Header mejorado para cliente autorizado -->
     <div class="bg-white shadow-lg mb-8">
       <div class="max-w-7xl mx-auto px-4 py-6">
@@ -10,441 +8,257 @@
             <h1 class="text-3xl font-bold text-gray-800">
               Bienvenido, <span class="text-green-600">{{ auhtService.getUserDetail()?.fullName }}</span>
             </h1>
+            <p class="text-gray-600 mt-1">Explora nuestro catálogo de productos ReptiTrack</p>
           </div>
-          <div class="bg-green-100 px-4 py-2 rounded-full">
-            
-          </div>
+          <!-- Botón del carrito -->
+          <button class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105"
+                  (click)="openCart()">
+            <mat-icon>shopping_cart</mat-icon>
+            <span>Carrito</span>
+            <span class="bg-green-800 text-white px-2 py-1 rounded-full text-sm font-bold">{{ cartItemsCount }}</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Catálogo de productos -->
+    <!-- Carrusel de imágenes mejorado -->
+    <div class="max-w-7xl mx-auto px-4 mb-12">
+      <div class="relative h-96 rounded-xl overflow-hidden shadow-2xl" 
+           (mouseenter)="pauseAutoSlide()" 
+           (mouseleave)="resumeAutoSlide()">
+        
+        <!-- Contenedor de imágenes -->
+        <div class="relative h-full">
+          <div *ngFor="let image of productImages; let i = index"
+               class="absolute inset-0 transition-opacity duration-500"
+               [class.opacity-100]="i === currentImageIndex"
+               [class.opacity-0]="i !== currentImageIndex">
+            <div class="h-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center relative">
+              <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+              <div class="text-center text-white z-10 px-8">
+                <h2 class="text-4xl font-bold mb-4">{{ image.title }}</h2>
+                <p class="text-xl opacity-90">{{ image.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controles de navegación -->
+        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full transition-all"
+                (click)="prevImage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full transition-all"
+                (click)="nextImage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <!-- Indicadores -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          <button *ngFor="let image of productImages; let i = index"
+                  class="w-3 h-3 rounded-full transition-all"
+                  [class.bg-white]="i === currentImageIndex"
+                  [class.bg-white-opacity-50]="i !== currentImageIndex"
+                  (click)="goToImage(i)">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catálogo de productos dinámico -->
     <div class="max-w-7xl mx-auto px-4 pb-12">
-      <!-- Productos disponibles -->
       <div class="mb-12">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Catálogo de Productos ReptiTrack</h2>
-        
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Producto 1: ReptiTrack Basic -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-              <mat-icon class="text-white text-6xl">sensors</mat-icon>
-            </div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold text-gray-800 mb-2">ReptiTrack Basic</h3>
-              <p class="text-gray-600 mb-4 text-sm">Sistema básico de monitoreo de temperatura y humedad.</p>
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-green-600">$1,500 MXN</span>
-                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Disponible</span>
+          <ng-container *ngIf="products.length > 0; else noProducts">
+            <div *ngFor="let product of products" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div class="h-48 flex items-center justify-center"
+                   [ngClass]="{
+                     'bg-gradient-to-br from-green-400 to-green-600': product.status === 1,
+                     'bg-gradient-to-br from-gray-400 to-gray-600': product.status !== 1
+                   }">
+                <mat-icon class="text-white text-6xl">inventory_2</mat-icon>
               </div>
-              <button class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                <mat-icon class="mr-2">add_shopping_cart</mat-icon>
-                Solicitar Cotización
-              </button>
-            </div>
-          </div>
-
-          <!-- Producto 2: ReptiTrack Pro -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-              <mat-icon class="text-white text-6xl">smart_toy</mat-icon>
-            </div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold text-gray-800 mb-2">ReptiTrack Pro</h3>
-              <p class="text-gray-600 mb-4 text-sm">Sistema completo con alimentación automatizada y control de iluminación.</p>
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-blue-600">$2,500 MXN</span>
-                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">Disponible</span>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">{{ product.name }}</h3>
+                <p class="text-gray-600 mb-4 text-sm">{{ product.description }}</p>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-2xl font-bold text-green-600">{{ formatPrice(product.salePrice) }}</span>
+                  <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Stock: {{ product.stock }}
+                  </span>
+                </div>
+                <button 
+                  class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  [disabled]="product.status !== 1 || product.stock <= 0"
+                  (click)="openPurchaseModal(product)">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  Agregar al carrito
+                </button>
               </div>
-              <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                <mat-icon class="mr-2">add_shopping_cart</mat-icon>
-                Solicitar Cotización
-              </button>
             </div>
-          </div>
-
-          <!-- Producto 3: ReptiTrack Premium -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-              <mat-icon class="text-white text-6xl">auto_awesome</mat-icon>
+          </ng-container>
+          <ng-template #noProducts>
+            <div class="col-span-3 text-center py-12">
+              <mat-icon class="text-6xl text-gray-400 mb-4">inventory_2</mat-icon>
+              <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay productos disponibles</h3>
+              <p class="text-gray-500">Vuelve más tarde para ver nuevos productos.</p>
             </div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold text-gray-800 mb-2">ReptiTrack Premium</h3>
-              <p class="text-gray-600 mb-4 text-sm">Sistema premium con IA, cámaras y análisis avanzado.</p>
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-purple-600">$3,500 MXN</span>
-                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-sm">Disponible</span>
-              </div>
-              <button class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                <mat-icon class="mr-2">add_shopping_cart</mat-icon>
-                Solicitar Cotización
-              </button>
-            </div>
-          </div>
+          </ng-template>
         </div>
       </div>
+    </div>
 
-      <!-- Servicios adicionales -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Servicios Adicionales</h2>
+    <!-- Modal de agregar producto al carrito -->
+    <div *ngIf="showPurchaseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closePurchaseModal()">
+      <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Agregar al carrito</h3>
+          <button (click)="closePurchaseModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
         
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-            <div class="flex items-center mb-4">
-              <div class="bg-green-100 p-3 rounded-full mr-4">
-                <mat-icon class="text-green-600">build</mat-icon>
-              </div>
-              <div>
-                <h3 class="text-lg font-bold text-gray-800">Instalación Profesional</h3>
-                <p class="text-green-600 font-semibold">$500 MXN</p>
-              </div>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">Instalación completa en tu hogar con garantía de 1 año.</p>
-            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-              Contratar Servicio
+        <div class="mb-4">
+          <h4 class="font-semibold text-gray-700">{{ selectedProduct?.name }}</h4>
+          <p class="text-gray-600 text-sm">{{ selectedProduct?.description }}</p>
+          <p class="text-green-600 font-bold">{{ formatPrice(selectedProduct?.salePrice || 0) }} c/u</p>
+        </div>
+        
+        <div class="mb-6">
+          <label class="block mb-2 font-semibold text-gray-700">Cantidad:</label>
+          <div class="flex items-center gap-3">
+            <button 
+              (click)="purchaseQuantity = purchaseQuantity > 1 ? purchaseQuantity - 1 : 1"
+              class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors">
+              <mat-icon class="text-sm">remove</mat-icon>
+            </button>
+            
+            <input type="number" 
+                   [(ngModel)]="purchaseQuantity" 
+                   min="1" 
+                   [max]="selectedProduct?.stock || 1" 
+                   class="w-20 text-center font-semibold border border-gray-300 rounded-md py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
+            
+            <button 
+              (click)="purchaseQuantity = purchaseQuantity < (selectedProduct?.stock || 1) ? purchaseQuantity + 1 : purchaseQuantity"
+              [disabled]="purchaseQuantity >= (selectedProduct?.stock || 1)"
+              class="w-10 h-10 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 rounded-full flex items-center justify-center transition-colors">
+              <mat-icon class="text-sm">add</mat-icon>
             </button>
           </div>
-
-          <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-            <div class="flex items-center mb-4">
-              <div class="bg-blue-100 p-3 rounded-full mr-4">
-                <mat-icon class="text-blue-600">support</mat-icon>
-              </div>
-              <div>
-                <h3 class="text-lg font-bold text-gray-800">Soporte Premium</h3>
-                <p class="text-blue-600 font-semibold">$200 MXN/mes</p>
-              </div>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">Soporte técnico 24/7 y monitoreo remoto profesional.</p>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-              Suscribirse
-            </button>
+          <p class="text-gray-500 text-xs mt-1">Stock disponible: {{ selectedProduct?.stock }}</p>
+        </div>
+        
+        <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center text-lg font-bold">
+            <span>Total:</span>
+            <span class="text-green-600">{{ formatPrice((selectedProduct?.salePrice || 0) * purchaseQuantity) }}</span>
           </div>
         </div>
-      </div>
 
-      <!-- Información de contacto -->
-      <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-xl shadow-lg p-8 text-white text-center">
-        <h2 class="text-2xl font-bold mb-4">¿Necesitas ayuda personalizada?</h2>
-        <p class="text-lg mb-6">Nuestro equipo de expertos está listo para asesorarte</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg transition-colors">
-            <mat-icon class="mr-2">phone</mat-icon>
-            Llamar Ahora
+        <div class="flex gap-3">
+          <button class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  (click)="addToCart(selectedProduct!, purchaseQuantity)" 
+                  [disabled]="purchaseQuantity < 1 || purchaseQuantity > (selectedProduct?.stock || 0)">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Agregar al carrito
           </button>
-          <button class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg transition-colors">
-            <mat-icon class="mr-2">chat</mat-icon>
-            Chat en Vivo
+          <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  (click)="confirmPurchase()" 
+                  [disabled]="purchaseQuantity < 1 || purchaseQuantity > (selectedProduct?.stock || 0)">
+            <mat-icon>flash_on</mat-icon>
+            Comprar ahora
           </button>
         </div>
+        
+        <button class="w-full mt-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-lg transition-colors"
+                (click)="closePurchaseModal()">
+          Cancelar
+        </button>
       </div>
     </div>
-  </div>
-  }@else if(isRegularUser()) {
-  <!-- Usuario normal logueado (sin roles específicos) - Pantalla de proceso de revisión -->
-  <div class="flex items-center flex-col pt-32 h-screen">
-    <div class="text-center">
-      <h1 class="text-4xl font-bold mb-6">
-        Bienvenido a
-        <span class="text-5xl text-green-800">ReptiTrack</span>
-      </h1>
-      <div
-        class="bg-white rounded-xl shadow-lg p-8 border-l-4 border-green-500 max-w-2xl mx-auto"
-      >
-        <h2 class="text-2xl mb-4">Has iniciado sesión como</h2>
-        <div
-          class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white inline-block"
-        >
-          <mat-icon class="mr-2">person</mat-icon>
-          <span class="font-bold text-lg">{{
-            auhtService.getUserDetail()?.fullName
-          }}</span>
-        </div>
-        <p class="text-gray-600 mt-4">
-          ¡Gracias por formar parte de ReptiTrack!
-        </p>
 
-        <!-- Nuevo estilo para el mensaje de proceso -->
-        <div
-          class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg"
-        >
-          <div class="flex items-start">
-            <mat-icon class="text-yellow-600 mr-3 mt-1">schedule</mat-icon>
-            <div>
-              <p class="text-yellow-800 font-medium text-sm">
-                Proceso de Revisión
-              </p>
-              <p class="text-yellow-700 text-sm mt-1">
-                En un proceso de 24 a 48 hrs de revisión, tendrás acceso a todo
-                el catálogo de ReptiTrack. Gracias por tu comprensión.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Componente del carrito -->
+    <app-cart 
+      [showModal]="showCartModal"
+      (closeModal)="closeCart()">
+    </app-cart>
   </div>
-  }@else if(!auhtService.getUserDetail()) {
-  <!-- Usuario no logueado - página de bienvenida -->
-  <div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <header class="text-center mb-12">
-      <h1 class="text-5xl font-bold text-gray-800 mb-4">
-        El Hogar Inteligente para Tu <span class="text-green-600">Reptil</span>
-      </h1>
-      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-        Monitoreo y control avanzado de hábitats para reptiles en cautiverio.
-      </p>
-      <button
-        (click)="requestQuote()"
-        class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-      >
-        <mat-icon class="mr-2">request_quote</mat-icon>
-        Cotiza Ahora
-      </button>
-    </header>
 
-    <!-- Producto Principal -->
-    <section class="bg-white rounded-xl shadow-lg p-8 mb-12">
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <h2 class="text-3xl font-bold text-gray-800 mb-4">
-            Nuestro Producto: <span class="text-green-600">ReptiTrack IoT</span>
-          </h2>
-          <div
-            class="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-4 border-l-4 border-green-500 shadow-md"
-          >
-            <p class="text-gray-700 text-center leading-relaxed">
-              <span class="font-semibold text-green-600">ReptiTrack IoT</span>
-              es un sistema inteligente y automatizado para monitorear y
-              controlar remotamente el hábitat de tus reptiles, garantizando un
-              entorno óptimo de
-              <span class="font-medium text-blue-600"
-                >temperatura, humedad, iluminación y alimentación</span
-              >, todo desde tu celular.
+  <ng-template #noClient>
+    <ng-container *ngIf="userHasNoRole(); else showLoginRegister">
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="flex flex-col items-center gap-8 max-w-5xl w-full px-4">
+      <!-- Mensaje de activación -->
+      <div class="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6">
+        <div class="text-center">
+          <mat-icon class="text-4xl text-yellow-500 mb-3">pending</mat-icon>
+          <h2 class="text-2xl font-bold mb-3 text-gray-800">Cuenta en Proceso de Activación</h2>
+          <p class="text-gray-600 mb-4">
+            Tu cuenta está siendo revisada. Espera entre
+            <span class="font-bold text-yellow-700">24 a 48 horas</span>
+          </p>
+          <div class="bg-yellow-50 rounded-lg border border-yellow-200 p-3">
+            <p class="text-sm text-yellow-700">
+              Nuestros administradores verificarán tu información para garantizar la seguridad.
             </p>
           </div>
-          <div class="text-2xl font-bold text-green-600 mb-4">
-            Precio: $2,000.00 MXN
-          </div>
-        </div>
-
-        <!-- Carrusel de Imágenes -->
-        <div
-          class="relative bg-white rounded-xl shadow-lg overflow-hidden"
-          (mouseenter)="pauseAutoSlide()"
-          (mouseleave)="resumeAutoSlide()"
-        >
-          <!-- ...existing code... (mantener el carrusel como está) -->
-          <!-- Contenedor de imágenes -->
-          <div class="relative h-96 overflow-hidden">
-            <div
-              *ngFor="let image of productImages; let i = index"
-              class="absolute inset-0 transition-transform duration-500 ease-in-out"
-              [class.translate-x-0]="i === currentImageIndex"
-              [class.translate-x-full]="i > currentImageIndex"
-              [class.-translate-x-full]="i < currentImageIndex"
-            >
-              <img
-                [src]="image.src"
-                [alt]="image.alt"
-                class="w-full h-full object-cover"
-                (error)="onImageError($event)"
-              />
-
-              <!-- Overlay con información -->
-              <div
-                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6"
-              >
-                <h3 class="text-white font-bold text-xl mb-2">
-                  {{ image.title }}
-                </h3>
-                <p class="text-white/80 text-sm">{{ image.description }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones de navegación -->
-          <button
-            (click)="prevImage()"
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-
-          <button
-            (click)="nextImage()"
-            class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-
-          <!-- Indicadores (dots) -->
-          <div
-            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2"
-          >
-            <span
-              *ngFor="let image of productImages; let i = index"
-              (click)="goToImage(i)"
-              class="w-3 h-3 rounded-full cursor-pointer transition-all"
-              [ngClass]="{
-                'bg-white': i === currentImageIndex,
-                'bg-white/50 hover:bg-white/70': i !== currentImageIndex
-              }"
-            >
-            </span>
-          </div>
-          <!-- Contador de imágenes -->
-          <div
-            class="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm"
-          >
-            {{ currentImageIndex + 1 }} / {{ productImages.length }}
-          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ...existing code... (mantener el resto del contenido para usuarios no logueados) -->
-    <!-- Ventajas Clave Mejoradas -->
-    <section class="mb-12">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
-        Ventajas Clave
-      </h2>
-      <div class="grid md:grid-cols-3 gap-6 mb-6">
-        <!-- Fila superior -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-green-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-green-100 p-3 rounded-full">
-              <mat-icon class="text-green-600 text-2xl">schedule</mat-icon>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Monitoreo en Tiempo Real
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Vigilancia 24/7 de las condiciones del hábitat
-          </p>
-        </div>
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-blue-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-blue-100 p-3 rounded-full">
-              <mat-icon class="text-blue-600 text-2xl">smart_toy</mat-icon>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Alimentación Automatizada
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Sistema programable de dispensado de alimento
-          </p>
-        </div>
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-purple-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-purple-100 p-3 rounded-full">
-              <mat-icon class="text-purple-600 text-2xl">thermostat</mat-icon>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Control Temp/Humedad
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Regulación automática del clima del terrario
-          </p>
-        </div>
+      <!-- Formulario de contacto -->
+      <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-xl shadow-lg p-8 text-white text-center mt-12">
+      <h3 class="text-2xl font-bold mb-4">¿Necesitas ayuda?</h3>
+      <p class="text-lg mb-6">Nuestro equipo de soporte está aquí para ayudarte</p>
+      <div class="center">
+        <app-contact-form></app-contact-form>
       </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Fila inferior -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-yellow-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-yellow-100 p-3 rounded-full">
-              <mat-icon class="text-yellow-600 text-2xl"
-                >notification_important</mat-icon
-              >
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Alertas Inteligentes
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Notificaciones instantáneas en tu móvil
-          </p>
-        </div>
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-green-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-green-100 p-3 rounded-full">
-              <mat-icon class="text-green-600 text-2xl">build</mat-icon>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Fácil Instalación
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Configuración plug-and-play en minutos
-          </p>
-        </div>
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border-l-4 border-blue-500"
-        >
-          <div class="flex items-center justify-center mb-4">
-            <div class="bg-blue-100 p-3 rounded-full">
-              <mat-icon class="text-blue-600 text-2xl">analytics</mat-icon>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-center text-gray-700 mb-2">
-            Reportes Históricos
-          </h3>
-          <p class="text-sm text-gray-600 text-center">
-            Análisis detallado del comportamiento
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section
-      class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl shadow-lg p-8 text-center"
-    >
-      <h2 class="text-3xl font-bold mb-4">¿Listo para comenzar?</h2>
-      <p class="text-xl mb-6">
-        Únete a nuestra plataforma y transforma el cuidado de tus reptiles
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a routerLink="/register">
-          <button
-            class="bg-white text-green-500 hover:bg-gray-100 font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center justify-center"
-          >
-            <mat-icon class="mr-2">person_add</mat-icon>
-            Crear Cuenta
-          </button>
-        </a>
-        <a routerLink="/login">
-          <button
-            class="border-2 border-white text-white hover:bg-white hover:text-green-500 font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 flex items-center justify-center"
-          >
-            <mat-icon class="mr-2">login</mat-icon>
-            Iniciar Sesión
-          </button>
-        </a>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="text-center mt-12 py-8 border-t border-gray-200">
-      <p class="text-gray-600">
-        © 2025 ReptiTrack. Tecnología avanzada para el cuidado de reptiles.
-      </p>
-    </footer>
+    </div>
+    </div>
   </div>
-  }
-  <!-- Si es admin, se redirige automáticamente al dashboard en ngOnInit, no se muestra nada aquí -->
+</ng-container>
+
+    <ng-template #showLoginRegister>
+      <div class="max-w-xl mx-auto py-24 text-center">
+        <div class="mb-8">
+          <mat-icon class="text-6xl text-green-600 mb-4">pets</mat-icon>
+          <h2 class="text-3xl font-bold mb-4 text-gray-800">Bienvenido a ReptiTrack</h2>
+          <p class="text-gray-600 mb-6">Inicia sesión o regístrate para ver el catálogo y realizar compras de productos especializados para el cuidado de reptiles.</p>
+        </div>
+        
+        <div class="flex gap-4 justify-center">
+          <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2" 
+                  (click)="goToLogin()">
+            <mat-icon>login</mat-icon>
+            Iniciar sesión
+          </button>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2" 
+                  (click)="goToRegister()">
+            <mat-icon>person_add</mat-icon>
+            Registrarse
+          </button>
+        </div>
+        
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <mat-icon class="text-green-600 text-3xl mb-3">thermostat</mat-icon>
+            <h3 class="font-bold text-gray-800 mb-2">Control de Temperatura</h3>
+            <p class="text-gray-600 text-sm">Monitoreo automático y regulación precisa del ambiente.</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <mat-icon class="text-blue-600 text-3xl mb-3">water_drop</mat-icon>
+            <h3 class="font-bold text-gray-800 mb-2">Gestión de Humedad</h3>
+            <p class="text-gray-600 text-sm">Control inteligente de los niveles de humedad óptimos.</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <mat-icon class="text-orange-600 text-3xl mb-3">lightbulb</mat-icon>
+            <h3 class="font-bold text-gray-800 mb-2">Iluminación LED</h3>
+            <p class="text-gray-600 text-sm">Ciclos de luz automatizados para el bienestar reptil.</p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
 </div>

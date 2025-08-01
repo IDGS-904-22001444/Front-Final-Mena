@@ -1,19 +1,84 @@
-<div *ngFor="let review of reviews" class="mb-4">
-  <div class="p-4 border-b">
-    <div class="flex items-center gap-2">
-      <span class="font-bold">Cliente #{{ review.clientId }}</span>
-      <span class="text-yellow-500">Calificación: {{ review.rating }}/5</span>
-      <span class="text-gray-400 text-xs">{{ review.createdAt | date:'short' }}</span>
+<div class="space-y-6">
+  @if (reviews && reviews.length > 0) {
+    @for (review of reviews; track review.id) {
+      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <!-- Header de la reseña -->
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="bg-blue-100 p-2 rounded-full">
+              <mat-icon class="text-blue-600">person</mat-icon>
+            </div>
+            <div>
+              <!-- Mostrar nombre completo -->
+              <p class="font-semibold text-gray-900">
+                {{ review.client?.fullName || 'Usuario Anónimo' }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ review.createdAt | date:'medium' }}
+              </p>
+              <!-- Email como información adicional -->
+             
+            </div>
+          </div>
+          
+          <!-- Rating stars -->
+          <div class="flex items-center">
+            <mat-icon 
+              *ngFor="let star of getRatingStars(review.rating)" 
+              [class]="star === 'star' ? 'text-yellow-400' : 'text-gray-300'"
+              class="text-lg"
+            >
+              {{ star }}
+            </mat-icon>
+            <span class="ml-2 text-sm font-medium text-gray-600">({{ review.rating }}/5)</span>
+          </div>
+        </div>
+
+        <!-- Comentario -->
+        <div class="mb-4">
+          <p class="text-gray-800 leading-relaxed">{{ review.comment }}</p>
+        </div>
+
+        <!-- Respuesta existente -->
+        @if (review.reply) {
+          <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg mb-4">
+            <div class="flex items-start">
+              <mat-icon class="text-green-600 mr-2 mt-0.5">support_agent</mat-icon>
+              <div class="flex-1">
+                <p class="font-semibold text-green-800 text-sm mb-1">Tu respuesta:</p>
+                <p class="text-green-700">{{ review.reply }}</p>
+                <p class="text-green-600 text-xs mt-2">
+                  {{ review.repliedAt | date:'medium' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- Botón para responder -->
+          <div class="flex justify-end">
+            <button 
+              (click)="selectReview(review)" 
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center"
+            >
+              <mat-icon class="mr-1 text-sm">reply</mat-icon>
+              Responder
+            </button>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <div class="text-center py-12">
+      <div class="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+        <mat-icon class="text-gray-400 text-4xl">rate_review</mat-icon>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No hay reseñas disponibles</h3>
+      <p class="text-gray-500">Las reseñas de los clientes aparecerán aquí</p>
     </div>
-    <div class="my-2">{{ review.comment }}</div>
-    <div *ngIf="review.reply" class="bg-green-50 p-2 rounded">
-      <span class="font-semibold text-green-700">Respuesta:</span> {{ review.reply }}
-      <span class="text-xs text-gray-400 ml-2">{{ review.repliedAt | date:'short' }}</span>
-    </div>
-    <button *ngIf="!review.reply" (click)="selectReview(review)" class="text-blue-600 hover:underline mt-2">Responder</button>
-  </div>
+  }
 </div>
 
+<!-- Formulario de respuesta -->
 <app-customer-review-reply-form
   *ngIf="selectedReview"
   [review]="selectedReview"

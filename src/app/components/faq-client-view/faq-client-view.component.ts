@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FaqService } from '../../services/faq.service';
 import { Faq } from '../../interfaces/faq';
+import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
+
 
 @Component({
   selector: 'app-faq-client-view',
@@ -17,7 +19,8 @@ import { Faq } from '../../interfaces/faq';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule,
-    FormsModule
+    FormsModule,
+    ContactFormComponent
   ],
   templateUrl: './faq-client-view.component.html',
   styleUrl: './faq-client-view.component.css'

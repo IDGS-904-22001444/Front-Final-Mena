@@ -1,0 +1,112 @@
+<div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeCart()">
+  <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+        <mat-icon class="mr-3 text-green-600">shopping_cart</mat-icon> 
+        Tu Carrito
+      </h3>
+      <button (click)="closeCart()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Carrito vacío -->
+    <div *ngIf="cart.length === 0" class="text-center py-12">
+      <mat-icon class="text-6xl text-gray-300 mb-4">remove_shopping_cart</mat-icon>
+      <h4 class="text-xl font-semibold text-gray-600 mb-2">Tu carrito está vacío</h4>
+      <p class="text-gray-500">Agrega productos para comenzar tu compra</p>
+    </div>
+
+    <!-- Contenido del carrito -->
+    <div *ngIf="cart.length > 0">
+      <!-- Lista de productos -->
+      <div class="space-y-4 mb-6">
+        <div *ngFor="let item of cart; trackBy: trackByProductId" 
+             class="flex items-center justify-between border border-gray-200 rounded-lg p-4 bg-gray-50">
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-800">{{ item.product.name }}</h4>
+            <p class="text-gray-600 text-sm">{{ item.product.description }}</p>
+            <p class="text-gray-600 text-sm">{{ formatPrice(item.product.salePrice) }} c/u</p>
+            <p class="text-green-600 font-semibold">{{ formatPrice(item.product.salePrice * item.quantity) }}</p>
+          </div>
+          
+          <!-- Controles de cantidad -->
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <button 
+                (click)="updateQuantity(item.product.productId, item.quantity - 1)"
+                [disabled]="isLoading"
+                class="w-8 h-8 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 rounded-full flex items-center justify-center transition-colors">
+                <mat-icon class="text-sm">remove</mat-icon>
+              </button>
+              
+              <input 
+                type="number" 
+                [value]="item.quantity"
+                (change)="updateQuantity(item.product.productId, +$any($event.target).value)"
+                [disabled]="isLoading"
+                min="1" 
+                [max]="item.product.stock"
+                class="w-16 text-center font-semibold border border-gray-300 rounded-md py-1 disabled:bg-gray-100">
+              
+              <button 
+                (click)="updateQuantity(item.product.productId, item.quantity + 1)"
+                [disabled]="item.quantity >= item.product.stock || isLoading"
+                class="w-8 h-8 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 rounded-full flex items-center justify-center transition-colors">
+                <mat-icon class="text-sm">add</mat-icon>
+              </button>
+            </div>
+            
+            <!-- Botón eliminar -->
+            <button 
+              (click)="removeFromCart(item.product.productId)"
+              [disabled]="isLoading"
+              class="text-red-600 hover:text-red-800 disabled:text-gray-400 p-2 rounded-full hover:bg-red-50 transition-colors">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="border-t border-gray-200 pt-4 mb-6">
+        <div class="flex justify-between items-center text-xl font-bold">
+          <span>Total:</span>
+          <span class="text-green-600">{{ formatPrice(getCartTotal()) }}</span>
+        </div>
+        <p class="text-gray-600 text-sm mt-1">{{ getItemsCount() }} productos en total</p>
+      </div>
+
+      <!-- Mensajes -->
+      <div *ngIf="cartError" class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
+        <mat-icon class="mr-2">error</mat-icon>
+        {{ cartError }}
+      </div>
+      
+      <div *ngIf="cartSuccess" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center">
+        <mat-icon class="mr-2">check_circle</mat-icon>
+        {{ cartSuccess }}
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex gap-3">
+        <button 
+          class="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+          (click)="confirmPurchase()" 
+          [disabled]="isLoading || cart.length === 0">
+          <mat-icon *ngIf="!isLoading">shopping_bag</mat-icon>
+          <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+          {{ isLoading ? 'Procesando...' : 'Confirmar Compra' }}
+        </button>
+        
+        <button 
+          class="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-4 px-6 rounded-lg transition-colors"
+          (click)="clearCart()" 
+          [disabled]="isLoading">
+          Vaciar Carrito
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

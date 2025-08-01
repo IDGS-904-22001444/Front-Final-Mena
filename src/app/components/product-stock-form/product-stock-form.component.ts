@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product-stock-form',
+  standalone: true,
   imports: [
     MatFormFieldModule, 
     MatInputModule, 
@@ -23,11 +24,11 @@ import { Observable } from 'rxjs';
     CommonModule
   ],
   templateUrl: './product-stock-form.component.html',
-  styleUrl: './product-stock-form.component.css',
+  styleUrls: ['./product-stock-form.component.css'],
 })
 export class ProductStockFormComponent implements OnInit {
   @Input({ required: true }) product!: Product;
-  @Input() errorMessage!: string;
+  @Input() errorMessage: string = '';
   @Output() updateProduct: EventEmitter<ProductUpdateRequest> = new EventEmitter<ProductUpdateRequest>();
   @Output() cancelEdit: EventEmitter<void> = new EventEmitter<void>();
 
@@ -42,14 +43,16 @@ export class ProductStockFormComponent implements OnInit {
 
   ngOnInit() {
     this.updateData = {
-      id: this.product.id,
+      id: this.product.productId.toString(),
       stock: this.product.stock,
-      status: this.mapStatusToNumber(this.product.status)
+      status: this.product.status
     };
   }
 
   onSubmit() {
-    this.updateProduct.emit(this.updateData);
+    if (this.isFormValid()) {
+      this.updateProduct.emit(this.updateData);
+    }
   }
 
   onCancel() {
@@ -57,30 +60,45 @@ export class ProductStockFormComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    return this.updateData.stock >= 0 && this.updateData.status > 0;
+    return this.updateData.stock >= 0 && 
+           this.updateData.status > 0 && 
+           this.updateData.id !== '';
   }
 
-  /**
-   * Mapea el status string a número
-   */
-  private mapStatusToNumber(status: string): number {
-    switch (status.toLowerCase()) {
-      case 'activo':
-        return 1;
-      case 'no activo':
-        return 2;
-      default:
-        return 1;
-    }
-  }
-
-  /**
-   * Solo permite números en el input de stock
-   */
   onStockInput(event: any) {
-    const value = event.target.value;
-    if (value < 0) {
+    const value = parseInt(event.target.value);
+    if (isNaN(value) || value < 0) {
       this.updateData.stock = 0;
+      event.target.value = '0';
+    } else {
+      this.updateData.stock = value;
     }
+  }
+
+  trackByStatusId(index: number, item: GeneralStatus): number {
+    return item.id;
+  }
+
+  onStatusChange(event: any) {
+    this.updateData.status = parseInt(event.target.value);
+  }
+
+  getProductName(): string {
+    return this.product?.name || 'Producto sin nombre';
+  }
+
+  getProductPrice(): number {
+    return this.product?.salePrice || 0;
+  }
+
+  getProductDescription(): string {
+    return this.product?.description || 'Sin descripción disponible';
+  }
+
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(price);
   }
 }

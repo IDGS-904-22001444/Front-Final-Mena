@@ -19,6 +19,9 @@ import { FaqsComponent } from './pages/faqs/faqs.component';
 import { FaqsAdminComponent } from './pages/faqs-admin/faqs-admin.component';
 import { CustomerReviewsAdminComponent } from './pages/customer-reviews-admin/customer-reviews-admin.component';
 import { CustomerReviewsComponent } from './pages/customer-reviews/customer-reviews.component';
+import { SalesAdminComponent } from './pages/sales-admin/sales-admin.component';
+import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.component';
+
 
 
 
@@ -137,5 +140,21 @@ export const routes: Routes = [
     roles: ['Cliente'],
   },
 },
+{
+    path: 'my-purchases',
+    component: MyPurchasesComponent,
+    canActivate: [roleGuard],
+    data: {
+      roles: ['Cliente'],
+    },
+  },
+  {
+    path: 'sales-admin',
+    component: SalesAdminComponent,
+    canActivate: [roleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
  
 ];
