@@ -1,103 +1,105 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-  <div class="w-full max-w-lg bg-white shadow-xl rounded-xl p-8">
-    <div class="flex flex-col items-center mb-6">
-      <div class="relative">
-       <div class="rounded-full bg-green-600 shadow-lg w-28 h-28 flex items-center justify-center text-5xl font-bold text-white mb-2">
-  {{ getInitial(accountDetail$ | async) }}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4">
+  <div class="max-w-6xl mx-auto">
+    <!-- Perfil Header -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <div class="flex flex-col md:flex-row items-center gap-8">
+        <!-- Avatar y Nombre -->
+        <div class="flex flex-col items-center">
+          <div class="relative">
+            <div class="rounded-full bg-gradient-to-r from-green-500 to-blue-600 shadow-lg w-36 h-36 flex items-center justify-center text-6xl font-bold text-white">
+              {{ getInitial(accountDetail$ | async) }}
+            </div>
+            <span class="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-md">
+              <span class="w-4 h-4 rounded-full bg-green-500 block"></span>
+            </span>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-800 mt-4">{{ (accountDetail$ | async)?.fullName }}</h1>
+          <div class="flex gap-2 mt-2">
+            <ng-container *ngFor="let role of (accountDetail$ | async)?.roles">
+              <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold"
+                [ngClass]="{
+                  'bg-red-100 text-red-700 border border-red-200': role === 'Admin',
+                  'bg-blue-100 text-blue-700 border border-blue-200': role === 'Cliente',
+                  'bg-gray-100 text-gray-700 border border-gray-200': role !== 'Admin' && role !== 'Cliente'
+                }">
+                <span class="material-icons text-sm">{{ role === 'Admin' ? 'security' : 'person' }}</span>
+                {{ role }}
+              </span>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Información Principal -->
+        <div class="flex-1 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-50 rounded-xl p-4">
+              <div class="flex items-center gap-3 text-green-700 font-semibold mb-2">
+                <span class="material-icons">mail</span>
+                Correo Electrónico
+              </div>
+              <p class="text-gray-800">{{ (accountDetail$ | async)?.email }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <div class="flex items-center gap-3 text-green-700 font-semibold mb-2">
+                <span class="material-icons">phone</span>
+                Número de Teléfono
+              </div>
+              <p class="text-gray-800">{{ (accountDetail$ | async)?.phoneNumber || '- (No especificado)' }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <div class="flex items-center gap-3 text-green-700 font-semibold mb-2">
+                <span class="material-icons">shield</span>
+                Intentos de Acceso Fallidos
+              </div>
+              <span class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold text-sm">
+                <span class="material-icons text-sm">check_circle</span>
+                {{ (accountDetail$ | async)?.accessFailedCount || 0 }}
+              </span>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <div class="flex items-center gap-3 text-green-700 font-semibold mb-2">
+                <span class="material-icons">verified_user</span>
+                Estado de la Cuenta
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                  <span class="material-icons text-sm">verified</span>
+                  Cuenta Verificada
+                </span>
+                <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
+                  <span class="material-icons text-sm">schedule</span>
+                  Activa
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Adicional -->
+<!-- Información Adicional - Solo para Clientes -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8" *ngIf="!(accountDetail$ | async)?.roles?.includes('Admin')">
+  <!-- Estadísticas de Uso -->
+  <div class="bg-white rounded-2xl shadow-xl p-8">
+    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+      <span class="material-icons text-green-600">analytics</span>
+      Estadísticas de Cuenta
+    </h3>
+    <div class="space-y-4">
+      <!-- Aquí puedes agregar estadísticas adicionales -->
+      <p class="text-gray-600">Próximamente más información...</p>
+    </div>
+  </div>
+
+  <!-- Formulario de Contacto -->
+  <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl shadow-xl p-8 text-white">
+    <h3 class="text-2xl font-bold mb-4">¿Necesitas ayuda?</h3>
+    <p class="text-lg mb-6">Nuestro equipo de soporte está aquí para ayudarte</p>
+    <div class="bg-white/10 rounded-xl p-6">
+      <app-contact-form></app-contact-form>
+    </div>
+  </div>
 </div>
-        <span class="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-white flex items-center justify-center">
-          <span class="w-3 h-3 rounded-full bg-green-500 block"></span>
-        </span>
-      </div>
-      <div class="text-xl font-bold text-gray-800 mt-2">{{ (accountDetail$ | async)?.fullName }}</div>
-    </div>
-    <hr class="my-4 border-gray-200">
-
-    <div class="space-y-5">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">person</span>
-          Nombre Completo
-        </div>
-        <span class="text-gray-800 font-medium">{{ (accountDetail$ | async)?.fullName }}</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">mail</span>
-          Correo Electrónico
-        </div>
-        <span class="text-gray-800 font-medium">{{ (accountDetail$ | async)?.email }}</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">verified_user</span>
-          Roles
-        </div>
-        <span>
-          <ng-container *ngFor="let role of (accountDetail$ | async)?.roles">
-            <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 border border-red-200 mr-1"
-              *ngIf="role === 'Admin'"
-            >
-              <span class="material-icons text-sm">security</span> {{ role }}
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200 mr-1"
-              *ngIf="role === 'Cliente'"
-            >
-              <span class="material-icons text-sm">person</span> {{ role }}
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200 mr-1"
-              *ngIf="role !== 'Admin' && role !== 'Cliente'"
-            >
-              <span class="material-icons text-sm">person</span> {{ role }}
-            </span>
-          </ng-container>
-        </span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">phone</span>
-          Número de Teléfono
-        </div>
-        <span class="text-gray-800 font-medium">
-          {{ (accountDetail$ | async)?.phoneNumber || '- (No especificado)' }}
-        </span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">shield</span>
-          Intentos de Acceso Fallidos
-        </div>
-        <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold text-xs">
-          <span class="material-icons text-sm">check_circle</span>
-          {{ (accountDetail$ | async)?.accessFailedCount || 0 }}
-        </span>
-      </div>
-    </div>
-
-    <div class="mt-8">
-      <div class="bg-green-50 border border-green-200 rounded-lg p-4 flex flex-col gap-2">
-        <div class="flex items-center gap-2 text-green-700 font-semibold">
-          <span class="material-icons">info</span>
-          Información de la Cuenta
-        </div>
-        <div class="flex items-center gap-2 text-green-700 text-sm">
-          <span class="material-icons text-base">verified_user</span>
-          Cuenta Verificada
-          <span class="material-icons text-base">schedule</span>
-          Activa desde el registro
-        </div>
-      </div>
-      <div class="flex justify-center mt-6">
-        <button
-          routerLink="/change-password"
-          class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition"
-        >
-          Cambiar contraseña
-        </button>
-      </div>
-    </div>
   </div>
 </div>

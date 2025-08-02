@@ -220,45 +220,109 @@
   </div>
 </ng-container>
 
-    <ng-template #showLoginRegister>
-      <div class="max-w-xl mx-auto py-24 text-center">
-        <div class="mb-8">
-          <mat-icon class="text-6xl text-green-600 mb-4">pets</mat-icon>
-          <h2 class="text-3xl font-bold mb-4 text-gray-800">Bienvenido a ReptiTrack</h2>
-          <p class="text-gray-600 mb-6">Inicia sesión o regístrate para ver el catálogo y realizar compras de productos especializados para el cuidado de reptiles.</p>
-        </div>
-        
-        <div class="flex gap-4 justify-center">
-          <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2" 
-                  (click)="goToLogin()">
-            <mat-icon>login</mat-icon>
-            Iniciar sesión
-          </button>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2" 
-                  (click)="goToRegister()">
-            <mat-icon>person_add</mat-icon>
-            Registrarse
-          </button>
-        </div>
-        
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <mat-icon class="text-green-600 text-3xl mb-3">thermostat</mat-icon>
-            <h3 class="font-bold text-gray-800 mb-2">Control de Temperatura</h3>
-            <p class="text-gray-600 text-sm">Monitoreo automático y regulación precisa del ambiente.</p>
+<ng-template #showLoginRegister>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col">
+    <div class="container mx-auto px-6 py-16">
+      <!-- Sección de descripción general -->
+      <div class="max-w-5xl mx-auto text-center mb-20">
+        <div class="flex justify-center mb-8">
+          <!-- Logo -->
+          <div class="w-32 h-32 bg-white rounded-full shadow-xl flex items-center justify-center p-6 transform hover:scale-105 transition-transform">
+            <img src="../../../assets/logo.png" alt="ReptiTrack Logo" class="w-full h-full object-contain">
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <mat-icon class="text-blue-600 text-3xl mb-3">water_drop</mat-icon>
-            <h3 class="font-bold text-gray-800 mb-2">Gestión de Humedad</h3>
-            <p class="text-gray-600 text-sm">Control inteligente de los niveles de humedad óptimos.</p>
+        </div>
+
+        <h1 class="text-6xl font-extrabold mb-8 text-gray-800 tracking-tight leading-tight">
+          Bienvenido a <span class="text-green-600">ReptiTrack</span>
+        </h1>
+
+        <div class="bg-white/90 p-8 rounded-2xl shadow-xl mb-12">
+          <p class="text-xl text-gray-700 mb-6">
+            ReptiTrack combina la abreviatura de "Repti" (abreviatura de Reptil) y "Track" (seguimiento o rastreo en inglés) 
+            encapsulando el propósito del sistema de monitoreo y control de hábitats para reptiles en cautiverio.
+          </p>
+          <p class="text-lg text-gray-600">
+            Somos un proyecto dedicado a la protección y el bienestar de los reptiles a través de soluciones tecnológicas 
+            avanzadas que asegura un hábitat natural y saludable. Como proyecto nuestro compromiso es el monitoreo integral 
+            y cuidado continuo, respaldado por la innovación y el respeto por la existencia y vida de las mascotas.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-20">
+        <div class="bg-white/90 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <mat-icon class="text-6xl text-green-600 mb-6">thermostat</mat-icon>
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">Control de Temperatura</h3>
+          <p class="text-gray-600 text-lg leading-relaxed">Monitoreo automático y regulación precisa del ambiente para tus reptiles.</p>
+        </div>
+        <div class="bg-white/90 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <mat-icon class="text-6xl text-blue-600 mb-6">water_drop</mat-icon>
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">Gestión de Humedad</h3>
+          <p class="text-gray-600 text-lg leading-relaxed">Control inteligente de los niveles de humedad para un hábitat óptimo.</p>
+        </div>
+        <div class="bg-white/90 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <mat-icon class="text-6xl text-orange-600 mb-6">lightbulb</mat-icon>
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">Iluminación LED</h3>
+          <p class="text-gray-600 text-lg leading-relaxed">Ciclos de luz automatizados para el bienestar de tus reptiles.</p>
+        </div>
+      </div>
+
+      <!-- Ventajas del Sistema -->
+      <div class="max-w-6xl mx-auto mb-20 bg-white/90 p-12 rounded-2xl shadow-xl">
+        <h3 class="text-4xl font-bold mb-10 text-gray-800 text-center">Ventajas del Sistema</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg text-gray-700">
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Reduce la necesidad de intervención manual</span>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <mat-icon class="text-orange-600 text-3xl mb-3">lightbulb</mat-icon>
-            <h3 class="font-bold text-gray-800 mb-2">Iluminación LED</h3>
-            <p class="text-gray-600 text-sm">Ciclos de luz automatizados para el bienestar reptil.</p>
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Minimiza errores humanos</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Garantiza el bienestar de los reptiles</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Sistema de bajo costo</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Monitoreo y control remoto de parámetros</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 hover:bg-green-50 rounded-xl transition-colors">
+            <mat-icon class="text-green-600 transform scale-125">check_circle</mat-icon>
+            <span>Sistema robusto de alertas y notificaciones</span>
           </div>
         </div>
       </div>
-    </ng-template>
+
+      <!-- Sección de Producto -->
+      <div class="max-w-6xl mx-auto bg-white/90 p-12 rounded-2xl shadow-xl">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <h3 class="text-3xl font-bold text-gray-800">Fotos del Producto</h3>
+            <div class="bg-gray-100 rounded-2xl aspect-video flex items-center justify-center overflow-hidden shadow-inner">
+              <!-- Aquí irá tu componente de carrusel -->
+              <p class="text-gray-500 text-xl">Carrusel de imágenes del producto</p>
+            </div>
+          </div>
+          <div class="space-y-6">
+            <h3 class="text-3xl font-bold text-gray-800">Precio Especial</h3>
+            <div class="bg-green-50 p-8 rounded-2xl">
+              <p class="text-6xl font-extrabold text-green-600 mb-4">$2,000 MXN</p>
+              <p class="text-xl text-gray-600">Incluye instalación y configuración básica</p>
+              <button class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <mat-icon>phone</mat-icon>
+                Solicitar Cotización
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
   </ng-template>
 </div>

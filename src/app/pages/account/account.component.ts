@@ -1,10 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
+
 
 @Component({
   selector: 'app-account',
-  imports: [CommonModule],
+  imports: [CommonModule, ContactFormComponent],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
