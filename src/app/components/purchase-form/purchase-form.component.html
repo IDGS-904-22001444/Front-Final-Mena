@@ -1,84 +1,87 @@
 <div class="space-y-6">
-  <form (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="onSubmit()" #purchaseForm="ngForm">
     <!-- Proveedor -->
     <div class="relative mb-6">
-      <select 
-        [(ngModel)]="purchase.providerId"
+      <select
+        [(ngModel)]="localPurchase.providerId"
         name="providerId"
         required
         class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
       >
-        <option value="0" disabled>Seleccionar Proveedor</option>
-        <option *ngFor="let provider of providers$ | async" [value]="provider.id">
-  {{ provider.name }} - {{ provider.contactPerson }}
-</option>
+        <option [ngValue]="null" disabled>Seleccionar Proveedor</option>
+        <option *ngFor="let provider of providers$ | async" [ngValue]="provider.id">
+          {{ provider.name }}
+        </option>
       </select>
       <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">business</mat-icon>
       <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
     </div>
-
-    <!-- Estado -->
-    <div class="relative mb-6">
-      <select 
-        [(ngModel)]="purchase.status"
-        name="status"
-        required
-        class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
-      >
-        <option value="0">Pendiente</option>
-        <option value="1">Completado</option>
-        <option value="2">Cancelado</option>
-      </select>
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">check_circle</mat-icon>
-      <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
-    </div>
-
     <!-- Detalles de la compra -->
     <div class="mb-6">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-700">Detalles de la Compra</h3>
-        <button type="button" (click)="addDetail()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+        <h3 class="text-lg font-semibold text-gray-700">
+          Detalles de la Compra
+        </h3>
+        <button
+          type="button"
+          (click)="addDetail()"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        >
           <mat-icon>add</mat-icon>
           Agregar Producto
         </button>
       </div>
 
-      <div *ngFor="let detail of purchase.details; let i = index" class="border border-gray-200 rounded-lg p-4 mb-4">
+      <div
+        *ngFor="let detail of localPurchase.details; let i = index"
+        class="border border-gray-200 rounded-lg p-4 mb-4"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Materia Prima -->
           <div class="relative">
-            <select 
+            <select
               [(ngModel)]="detail.rawMaterialId"
               [name]="'rawMaterialId_' + i"
               required
+              #rawMaterial="ngModel"
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none cursor-pointer"
             >
-              <option value="0" disabled>Seleccionar Material</option>
-              <option *ngFor="let material of rawMaterials$ | async" [value]="material.id">
+              <option [ngValue]="0">Seleccionar Material</option>
+              <option
+                *ngFor="let material of rawMaterials$ | async"
+                [ngValue]="material.id"
+              >
                 {{ material.name }}
               </option>
             </select>
-            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">inventory_2</mat-icon>
+            <mat-icon
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
+              >inventory_2</mat-icon
+            >
           </div>
 
           <!-- Cantidad -->
           <div class="relative">
-            <input 
+            <input
               type="number"
               [(ngModel)]="detail.quantity"
               [name]="'quantity_' + i"
               placeholder="Cantidad"
               min="1"
               required
+              #quantity="ngModel"
               (input)="calculateDetailSubtotal(i)"
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">format_list_numbered</mat-icon>
+            <mat-icon
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
+              >format_list_numbered</mat-icon
+            >
           </div>
 
           <!-- Precio Unitario -->
           <div class="relative">
-            <input 
+            <input
               type="number"
               [(ngModel)]="detail.unitPrice"
               [name]="'unitPrice_' + i"
@@ -86,25 +89,37 @@
               min="0"
               step="0.01"
               required
+              #unitPrice="ngModel"
               (input)="calculateDetailSubtotal(i)"
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">attach_money</mat-icon>
+            <mat-icon
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
+              >attach_money</mat-icon
+            >
           </div>
 
           <!-- Subtotal y botón eliminar -->
           <div class="flex items-center gap-2">
             <div class="relative flex-1">
-              <input 
+              <input
                 type="number"
-                [value]="detail.subtotal || 0"
+                [ngModel]="detail.subtotal"
+                [name]="'subtotal_' + i"
                 readonly
                 placeholder="Subtotal"
                 class="w-full px-10 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 text-sm cursor-not-allowed"
               />
-              <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">calculate</mat-icon>
+              <mat-icon
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"
+                >calculate</mat-icon
+              >
             </div>
-            <button type="button" (click)="removeDetail(i)" class="text-red-600 hover:text-red-800 p-2">
+            <button
+              type="button"
+              (click)="removeDetail(i)"
+              class="text-red-600 hover:text-red-800 p-2"
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -114,44 +129,48 @@
 
     <!-- Total -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [value]="purchase.total || 0"
+        [ngModel]="localPurchase.total"
+        name="total"
         readonly
         placeholder="Total de la Compra"
         class="w-full px-12 py-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 text-base cursor-not-allowed font-bold"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">account_balance_wallet</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+        >account_balance_wallet</mat-icon
+      >
     </div>
 
-    @if(errorMessage) {
-      <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-md">
-        <div class="flex items-center">
-          <mat-icon class="text-red-500 mr-2">error</mat-icon>
-          <span class="text-base text-red-700">{{errorMessage}}</span>
-        </div>
+    @if (errorMessage) {
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-md">
+      <div class="flex items-center">
+        <mat-icon class="text-red-500 mr-2">error</mat-icon>
+        <span class="text-base text-red-700">{{ errorMessage }}</span>
       </div>
+    </div>
     }
-    
+
     <div class="flex gap-4">
-      <button 
-        [disabled]="!purchase.providerId || purchase.details.length === 0" 
-        type="submit" 
+      <button
+        type="submit"
+        [disabled]="purchaseForm.invalid || !localPurchase.details.length"
         class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
       >
-        <mat-icon>{{ isEditing ? 'save' : 'add' }}</mat-icon>
-        <span>{{ isEditing ? 'Actualizar' : 'Crear' }} Compra</span>
+        <mat-icon>{{ isEditing ? "save" : "add" }}</mat-icon>
+        <span>{{ isEditing ? "Actualizar" : "Crear" }} Compra</span>
       </button>
 
-      @if(isEditing) {
-        <button 
-          type="button"
-          (click)="onCancel()"
-          class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-        >
-          <mat-icon>cancel</mat-icon>
-          <span>Cancelar</span>
-        </button>
+      @if (isEditing) {
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+      >
+        <mat-icon>cancel</mat-icon>
+        <span>Cancelar</span>
+      </button>
       }
     </div>
   </form>

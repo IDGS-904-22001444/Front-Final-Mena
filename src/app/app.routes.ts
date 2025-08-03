@@ -23,6 +23,10 @@ import { SalesAdminComponent } from './pages/sales-admin/sales-admin.component';
 import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.component';
 import { QuotationFormComponent } from './components/quotation-form/quotation-form.component';
 import { QuotationsAdminComponent } from './components/quotation-admin/quotation-admin.component';  
+import { ProductionComponent } from './pages/production/production.component';
+import { ProductMaterialsComponent } from './components/product-materials/product-materials.component';
+
+
 
 
 
@@ -168,6 +172,22 @@ export const routes: Routes = [
   component: QuotationsAdminComponent,
   canActivate: [authGuard],
   data: { roles: ['Admin'] }
-}
+},
+{
+    path: 'production',
+    component: ProductionComponent,
+    canActivate: [roleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
+   {
+    path: 'materials',
+    component: ProductMaterialsComponent,
+    data: {
+          roles: ['Admin'],
+
+    }
+  },
  
 ];

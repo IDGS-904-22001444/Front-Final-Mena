@@ -31,7 +31,15 @@ export class PurchasesComponent implements OnInit {
   snackBar = inject(MatSnackBar);
   
   errorMessage = '';
-  purchase: PurchaseCreateRequest = {} as PurchaseCreateRequest;
+  localPurchase: PurchaseCreateRequest = {
+    providerId: 0,
+    adminId: 'd492f02f-0c0f-4817-a327-40dba81726ec', // ID del admin por defecto
+    purchaseDate: new Date().toISOString(),
+    total: 0,
+    status: 0,
+    details: []
+  };
+  
   purchases$!: Observable<Purchase[]>;
   isEditing = false;
   editingPurchaseId: number = 0;
@@ -46,7 +54,7 @@ export class PurchasesComponent implements OnInit {
   }
 
   initializePurchase() {
-    this.purchase = {
+    this.localPurchase = {
       providerId: 0,
       adminId: 'd492f02f-0c0f-4817-a327-40dba81726ec', // ID del admin por defecto
       purchaseDate: new Date().toISOString(),
@@ -70,25 +78,37 @@ export class PurchasesComponent implements OnInit {
   }
 
   createPurchase(purchase: PurchaseCreateRequest) {
+    console.log('Iniciando creación de compra:', purchase);
+
     this.purchaseService.createPurchase(purchase).subscribe({
-      next: (response: { message: string }) => {
-        this.loadPurchases();
-        this.snackBar.open('Compra creada exitosamente', 'Cerrar', {
+      next: (response) => {
+        console.log('Compra creada exitosamente:', response);
+        this.snackBar.open('Compra creada con éxito', 'Cerrar', {
           duration: 3000,
+          panelClass: ['success-snackbar']
         });
-        this.resetForm();
+        this.loadPurchases();
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error creating purchase:', error);
-        if (error.status === 400) {
-          this.errorMessage = error.error?.message || error.error || 'Error en la validación';
-        } else {
-          this.errorMessage = 'Error interno del servidor';
-        }
-        this.snackBar.open('Error al crear la compra: ' + this.errorMessage, 'Cerrar', {
-          duration: 5000,
+        console.error('Error detallado:', {
+          status: error.status,
+          message: error.message,
+          errors: error.error?.errors
         });
-      },
+        
+        let errorMessage = 'Error al crear la compra';
+        
+        if (error.error?.errors) {
+          const validationErrors = Object.values(error.error.errors).flat();
+          errorMessage = validationErrors.join('\n');
+        }
+        
+        this.errorMessage = errorMessage;
+        this.snackBar.open(errorMessage, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+      }
     });
   }
 
@@ -112,7 +132,7 @@ export class PurchasesComponent implements OnInit {
   editPurchase(purchase: Purchase) {
     this.isEditing = true;
     this.editingPurchaseId = purchase.id;
-    this.purchase = {
+    this.localPurchase = {
       providerId: purchase.providerId,
       adminId: purchase.adminId,
       purchaseDate: purchase.purchaseDate,

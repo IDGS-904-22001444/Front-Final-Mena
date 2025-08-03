@@ -102,7 +102,7 @@
     <span>Gestión de Cotizaciones</span>
   </button>
 
-  <button *ngIf="authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/quotation-form">
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/quotations">
     <mat-icon>assignment</mat-icon>
     <span>Formulario de Cotización</span>
   </button>

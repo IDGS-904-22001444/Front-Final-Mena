@@ -6,6 +6,8 @@ import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-product-list',
+      standalone: true, // Añadir esta línea
+  
   imports: [MatIconModule, MatButtonModule, CommonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',

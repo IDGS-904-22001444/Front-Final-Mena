@@ -74,12 +74,12 @@
       </div>
       <div class="p-6">
         <app-purchase-form
-          [purchase]="purchase"
-          [isEditing]="isEditing"
-          [errorMessage]="errorMessage"
-          (savePurchase)="savePurchase($event)"
-          (cancelEdit)="cancelEdit()"
-        />
+  [localPurchase]="localPurchase"
+  [isEditing]="isEditing"
+  [errorMessage]="errorMessage"
+  (savePurchase)="savePurchase($event)"
+  (cancelEdit)="cancelEdit()"
+/>
       </div>
     </div>
 

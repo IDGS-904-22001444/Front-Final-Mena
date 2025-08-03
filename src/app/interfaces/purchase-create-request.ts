@@ -7,7 +7,7 @@ export interface PurchaseCreateRequest {
   details: PurchaseDetailInCreate[];
 }
 
-export interface PurchaseDetailInCreate {
+interface PurchaseDetailInCreate {
   rawMaterialId: number;
   quantity: number;
   unitPrice: number;

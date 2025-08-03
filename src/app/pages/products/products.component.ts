@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-products',
+    standalone: true, // Añadir esta línea
   imports: [
     ProductFormComponent,
     ProductListComponent,

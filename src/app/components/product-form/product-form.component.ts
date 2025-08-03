@@ -12,6 +12,7 @@ import { ProductUpdateRequest } from '../../interfaces/product-update-request';
 
 @Component({
   selector: 'app-product-form',
+    standalone: true, // Añadir esta línea
   imports: [
     MatFormFieldModule, 
     MatInputModule, 
