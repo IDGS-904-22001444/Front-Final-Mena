@@ -96,6 +96,14 @@
   <mat-icon>trending_up</mat-icon>
   <span>Gestión de Ventas</span>
 </button>
+
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/quotations-admin">
+    <mat-icon>assignment</mat-icon>
+    <span>Gestión de Cotizaciones</span>
+  </button>
+
+  <button *ngIf="authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/quotation-form">
+    <mat-icon>assignment</mat-icon>
+    <span>Formulario de Cotización</span>
+  </button>
 </mat-menu>
-
-

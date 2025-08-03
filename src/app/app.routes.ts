@@ -21,7 +21,8 @@ import { CustomerReviewsAdminComponent } from './pages/customer-reviews-admin/cu
 import { CustomerReviewsComponent } from './pages/customer-reviews/customer-reviews.component';
 import { SalesAdminComponent } from './pages/sales-admin/sales-admin.component';
 import { MyPurchasesComponent } from './pages/my-purchases/my-purchases.component';
-
+import { QuotationFormComponent } from './components/quotation-form/quotation-form.component';
+import { QuotationsAdminComponent } from './components/quotation-admin/quotation-admin.component';  
 
 
 
@@ -156,5 +157,17 @@ export const routes: Routes = [
       roles: ['Admin'],
     },
   },
+  {
+  path: 'quotations',
+  component: QuotationFormComponent,
+  canActivate: [authGuard],
+  data: { roles: ['Cliente'] }
+},
+{
+  path: 'quotations-admin',
+  component: QuotationsAdminComponent,
+  canActivate: [authGuard],
+  data: { roles: ['Admin'] }
+}
  
 ];
