@@ -111,4 +111,9 @@
     <mat-icon>production_quantity_limits</mat-icon>
     <span>Gestion de produccion</span>
   </button>
+
+    <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/materials">
+    <mat-icon>filter_frames</mat-icon>
+    <span>Gestion de materiales</span>
+  </button>
 </mat-menu>
