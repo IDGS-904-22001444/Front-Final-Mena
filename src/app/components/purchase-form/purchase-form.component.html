@@ -2,26 +2,25 @@
   <form (ngSubmit)="onSubmit()" #purchaseForm="ngForm">
     <!-- Proveedor -->
     <div class="relative mb-6">
-      <select
-        [(ngModel)]="localPurchase.providerId"
-        name="providerId"
-        required
-        class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
-      >
-        <option [ngValue]="null" disabled>Seleccionar Proveedor</option>
-        <option *ngFor="let provider of providers$ | async" [ngValue]="provider.id">
-          {{ provider.name }}
-        </option>
-      </select>
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">business</mat-icon>
+<select
+  [(ngModel)]="localPurchase.providerId"
+  name="providerId"
+  required
+  (change)="onProviderChange($event)"
+  class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md appearance-none cursor-pointer"
+>
+  <option [ngValue]="null" disabled>Seleccionar Proveedor</option>
+  <option *ngFor="let provider of providers$ | async" [ngValue]="provider.providerId || provider.id">
+    {{ provider.name }}
+  </option>
+</select>      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">business</mat-icon>
       <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
     </div>
+
     <!-- Detalles de la compra -->
     <div class="mb-6">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-700">
-          Detalles de la Compra
-        </h3>
+        <h3 class="text-lg font-semibold text-gray-700">Detalles de la Compra</h3>
         <button
           type="button"
           (click)="addDetail()"
@@ -47,17 +46,13 @@
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none cursor-pointer"
             >
               <option [ngValue]="0">Seleccionar Material</option>
-              <option
-                *ngFor="let material of rawMaterials$ | async"
-                [ngValue]="material.id"
-              >
+              <option *ngFor="let material of rawMaterials$ | async" [ngValue]="material.id">
                 {{ material.name }}
               </option>
             </select>
-            <mat-icon
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-              >inventory_2</mat-icon
-            >
+            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">
+              inventory_2
+            </mat-icon>
           </div>
 
           <!-- Cantidad -->
@@ -73,10 +68,9 @@
               (input)="calculateDetailSubtotal(i)"
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <mat-icon
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-              >format_list_numbered</mat-icon
-            >
+            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">
+              format_list_numbered
+            </mat-icon>
           </div>
 
           <!-- Precio Unitario -->
@@ -93,10 +87,9 @@
               (input)="calculateDetailSubtotal(i)"
               class="w-full px-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <mat-icon
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-              >attach_money</mat-icon
-            >
+            <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm">
+              attach_money
+            </mat-icon>
           </div>
 
           <!-- Subtotal y botón eliminar -->
@@ -110,10 +103,9 @@
                 placeholder="Subtotal"
                 class="w-full px-10 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 text-sm cursor-not-allowed"
               />
-              <mat-icon
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"
-                >calculate</mat-icon
-              >
+              <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                calculate
+              </mat-icon>
             </div>
             <button
               type="button"
@@ -137,10 +129,9 @@
         placeholder="Total de la Compra"
         class="w-full px-12 py-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 text-base cursor-not-allowed font-bold"
       />
-      <mat-icon
-        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-        >account_balance_wallet</mat-icon
-      >
+      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+        account_balance_wallet
+      </mat-icon>
     </div>
 
     @if (errorMessage) {

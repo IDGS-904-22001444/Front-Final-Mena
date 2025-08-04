@@ -1,5 +1,5 @@
 export interface Purchase {
-  id: number;
+  id: number;  // Definir explícitamente como number
   providerId: number;
   adminId: string;
   purchaseDate: string;

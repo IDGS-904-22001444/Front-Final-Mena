@@ -1,5 +1,5 @@
 export interface PurchaseCreateRequest {
-  providerId: number;
+  providerId: number | null;
   adminId: string;
   purchaseDate: string;
   total: number;

@@ -106,4 +106,9 @@
     <mat-icon>assignment</mat-icon>
     <span>Formulario de Cotización</span>
   </button>
+
+    <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/production">
+    <mat-icon>production_quantity_limits</mat-icon>
+    <span>Gestion de produccion</span>
+  </button>
 </mat-menu>
