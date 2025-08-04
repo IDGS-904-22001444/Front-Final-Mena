@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { ProductMaterialService } from '../../services/product-material.service';
 import { ProductMaterial, ProductMaterialCreateRequest, Product, RawMaterial } from '../../interfaces/product-material';
+import { RawMaterialsComponent } from '../raw-materials/raw-materials.component';
+
 
 @Component({
   selector: 'app-product-materials',
@@ -18,12 +20,14 @@ import { ProductMaterial, ProductMaterialCreateRequest, Product, RawMaterial } f
     MatIconModule, 
     MatButtonModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    RawMaterialsComponent
   ],
   templateUrl: './product-materials.component.html',
   styleUrls: ['./product-materials.component.css']
 })
 export class ProductMaterialsComponent implements OnInit {
+    activeTab: 'assignments' | 'materials' = 'assignments';
   productMaterials: ProductMaterial[] = [];
   products: Product[] = [];
   rawMaterials: RawMaterial[] = [];
