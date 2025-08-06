@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
   <div class="max-w-7xl mx-auto">
-    <!-- Header mejorado -->
+    <!-- Header -->
     <div class="mb-8 bg-white rounded-2xl shadow-xl p-8 border-l-4 border-green-500 backdrop-blur-sm">
       <div class="flex items-center justify-between">
         <div>
@@ -8,7 +8,12 @@
             <mat-icon class="text-green-600 mr-4 text-5xl">dashboard</mat-icon>
             Dashboard de Administrador
           </h1>
-          <p class="text-gray-600 mt-3 text-xl">Bienvenido, <span class="font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full">{{ authService.getUserDetail()?.fullName }}</span></p>
+          <p class="text-gray-600 mt-3 text-xl">
+            Bienvenido,
+            <span class="font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full">
+              {{ userFullName }}
+            </span>
+          </p>
         </div>
         <div class="hidden md:block">
           <div class="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-2xl shadow-lg">
@@ -18,7 +23,7 @@
       </div>
     </div>
 
-    <!-- Cards de métricas mejoradas -->
+    <!-- Cards de métricas -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
       <!-- Total de Clientes -->
       <div class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border-l-4 border-green-500 hover:scale-105 hover:-translate-y-2">
@@ -93,9 +98,9 @@
       </div>
     </div>
 
-    <!-- Gráficos mejorados -->
+    <!-- Resúmenes en vez de gráficos -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-      <!-- Ventas Mensuales -->
+      <!-- Ventas Mensuales (Resumen) -->
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500">
         <div class="px-8 py-6 bg-gradient-to-r from-green-500 via-green-600 to-green-700">
           <h3 class="text-2xl font-bold text-white flex items-center">
@@ -103,19 +108,25 @@
             Ventas Mensuales
           </h3>
         </div>
-        <div class="p-8">
-          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-20 border-2 border-dashed border-gray-300 text-center hover:from-gray-100 hover:to-gray-200 transition-all duration-500">
-            <mat-icon class="text-green-500 text-6xl mb-6">trending_up</mat-icon>
-            <p class="text-gray-700 font-bold text-lg">Gráfico de Barras (Chart.js)</p>
-            <p class="text-gray-500 mt-3">Aquí se mostraría el gráfico de ventas mensuales</p>
-            <button class="mt-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
-              Ver Detalles
-            </button>
-          </div>
-        </div>
+        <table class="min-w-full divide-y divide-gray-200 mt-6">
+  <thead>
+    <tr>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let venta of ventasRecientes">
+      <td class="px-6 py-4">{{ venta.id }}</td>
+      <td class="px-6 py-4">{{ venta.purchaseDate | date:'short' }}</td>
+      <td class="px-6 py-4">{{ venta.total | currency }}</td>
+    </tr>
+  </tbody>
+</table>
       </div>
 
-      <!-- Cotizaciones por Tipo de Reptil -->
+      <!-- Cotizaciones por Tipo de Reptil (Resumen) -->
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500">
         <div class="px-8 py-6 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800">
           <h3 class="text-2xl font-bold text-white flex items-center">
@@ -123,20 +134,25 @@
             Cotizaciones por Tipo de Reptil
           </h3>
         </div>
-        <div class="p-8">
-          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-20 border-2 border-dashed border-gray-300 text-center hover:from-gray-100 hover:to-gray-200 transition-all duration-500">
-            <mat-icon class="text-amber-600 text-6xl mb-6">pie_chart</mat-icon>
-            <p class="text-gray-700 font-bold text-lg">Gráfico de Dona (Chart.js)</p>
-            <p class="text-gray-500 mt-3">Aquí se mostraría la distribución por tipo de reptil</p>
-            <button class="mt-6 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
-              Ver Análisis
-            </button>
-          </div>
-        </div>
+        <!-- Tabla de Cotizaciones por Tipo de Reptil -->
+<table class="min-w-full divide-y divide-gray-200 mt-6">
+  <thead>
+    <tr>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo de Reptil</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cantidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of cotizacionesPorTipo">
+      <td class="px-6 py-4">{{ item.tipo }}</td>
+      <td class="px-6 py-4">{{ item.cantidad }}</td>
+    </tr>
+  </tbody>
+</table>
       </div>
     </div>
 
-    <!-- Acciones rápidas mejoradas -->
+    <!-- Acciones rápidas -->
     <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500">
       <div class="px-8 py-6 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900">
         <h3 class="text-2xl font-bold text-white flex items-center">
@@ -148,7 +164,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <button 
             class="group bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-            (click)="router.navigate(['/users'])">
+            (click)="goTo('/users')">
             <div class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300">
               <mat-icon class="text-white text-2xl">people</mat-icon>
             </div>
@@ -157,7 +173,7 @@
           
           <button 
             class="group bg-gradient-to-br from-green-600 via-green-700 to-green-800 hover:from-green-700 hover:via-green-800 hover:to-green-900 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-            (click)="router.navigate(['/providers'])">
+            (click)="goTo('/providers')">
             <div class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300">
               <mat-icon class="text-white text-2xl">local_shipping</mat-icon>
             </div>
@@ -166,7 +182,7 @@
           
           <button 
             class="group bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-            (click)="router.navigate(['/roles'])">
+            (click)="goTo('/roles')">
             <div class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300">
               <mat-icon class="text-white text-2xl">settings</mat-icon>
             </div>
@@ -176,7 +192,7 @@
       </div>
     </div>
 
-    <!-- Footer del dashboard -->
+    <!-- Footer -->
     <div class="mt-10 text-center bg-white rounded-2xl shadow-lg p-6">
       <p class="text-gray-500 text-sm font-medium">
         © 2025 ReptiTrack

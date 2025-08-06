@@ -14,7 +14,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
 
-
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -96,6 +95,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe((cart) => {
       this.cartItemsCount = this.cartService.getItemsCount();
     });
+
+    this.loadProducts();
   }
 
   ngOnDestroy(): void {
@@ -115,6 +116,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.showCartModal = false;
   }
 
+  loadProducts() {
+    this.productService.getProducts().subscribe({
+      next: (products) => {
+        this.products = products;
+      },
+      error: () => {
+        this.products = [];
+      },
+    });
+  }
   addToCart(product: Product, quantity: number) {
     if (!product || quantity < 1) return;
     this.cartService.addToCart(product, quantity);
@@ -135,7 +146,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Confirmar compra individual - SIMPLIFICADO PARA USAR GUID
   async confirmPurchase() {
-    if (!this.selectedProduct || this.selectedProduct.salePrice === undefined) return;
+    if (!this.selectedProduct || this.selectedProduct.salePrice === undefined)
+      return;
 
     const user = this.auhtService.getUserDetail();
     if (!user?.id) {
@@ -189,6 +201,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   isUserAdmin(): boolean {
     const userDetail = this.auhtService.getUserDetail();
     return userDetail?.roles.includes('Admin') || false;
+  }
+
+  productCarouselIndex = 0;
+
+  nextProduct() {
+    if (this.products.length > 0) {
+      this.productCarouselIndex =
+        (this.productCarouselIndex + 1) % this.products.length;
+    }
+  }
+
+  prevProduct() {
+    if (this.products.length > 0) {
+      this.productCarouselIndex =
+        (this.productCarouselIndex - 1 + this.products.length) %
+        this.products.length;
+    }
   }
 
   // Métodos del carrusel

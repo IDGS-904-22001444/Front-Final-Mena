@@ -479,42 +479,58 @@
           </div>
 
           <!-- Sección de Producto -->
-          <div class="max-w-6xl mx-auto bg-white/90 p-12 rounded-2xl shadow-xl">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-              <div class="space-y-6">
-                <h3 class="text-3xl font-bold text-gray-800">
-                  Fotos del Producto
-                </h3>
-                <div
-                  class="bg-gray-100 rounded-2xl aspect-video flex items-center justify-center overflow-hidden shadow-inner"
-                >
-                  <!-- Aquí irá tu componente de carrusel -->
-                  <p class="text-gray-500 text-xl">
-                    Carrusel de imágenes del producto
-                  </p>
-                </div>
-              </div>
-              <div class="space-y-6">
-                <h3 class="text-3xl font-bold text-gray-800">
-                  Precio Especial
-                </h3>
-                <div class="bg-green-50 p-8 rounded-2xl">
-                  <p class="text-6xl font-extrabold text-green-600 mb-4">
-                    $2,000 MXN
-                  </p>
-                  <p class="text-xl text-gray-600">
-                    Incluye instalación y configuración básica
-                  </p>
-                  <button
-                    class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
-                  >
-                    <mat-icon>phone</mat-icon>
-                    Solicitar Cotización
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- ...existing code... -->
+<div class="max-w-6xl mx-auto bg-white/90 p-12 rounded-2xl shadow-xl">
+  <div class="flex flex-col items-center space-y-8">
+    <h3 class="text-4xl font-bold text-gray-800 text-center">
+      Fotos del Producto
+    </h3>
+    <div class="relative bg-gray-100 rounded-2xl aspect-video flex items-center justify-center overflow-hidden shadow-inner w-full max-w-2xl mx-auto">
+      <ng-container *ngIf="products.length > 0; else noImage">
+        <img
+          [src]="products[productCarouselIndex]?.imageUrl"
+          [alt]="products[productCarouselIndex]?.name"
+          class="object-contain w-full h-full"
+        />
+        <!-- Flechas de navegación -->
+        <button
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
+          (click)="prevProduct()"
+          [disabled]="products.length < 2"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
+          (click)="nextProduct()"
+          [disabled]="products.length < 2"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </ng-container>
+      <ng-template #noImage>
+        <p class="text-gray-500 text-xl">
+          No hay imagen disponible
+        </p>
+      </ng-template>
+    </div>
+    <!-- Info del producto seleccionado -->
+    <ng-container *ngIf="products.length > 0">
+      <div class="mt-4 text-center w-full">
+        <h4 class="text-3xl font-extrabold text-gray-800 mb-2">
+          {{ products[productCarouselIndex]?.name }}
+        </h4>
+        <p class="text-xl text-gray-600 mb-4">
+          {{ products[productCarouselIndex]?.description }}
+        </p>
+        <span class="text-4xl font-extrabold text-green-600 block mb-2">
+          {{ formatPrice(products[productCarouselIndex]?.salePrice || 0) }}
+        </span>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<!-- ...existing code... -->
         </div>
       </div>
     </ng-template>
