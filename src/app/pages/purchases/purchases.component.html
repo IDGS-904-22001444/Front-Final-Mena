@@ -101,8 +101,18 @@
           [purchases]="purchases$ | async"
           (editPurchase)="editPurchase($event)"
           (deletePurchase)="deletePurchase($event)"
+          (viewPurchaseDetails)="viewPurchaseDetails($event)"
         />
       </div>
     </div>
   </div>
+
+  <!-- Modal de Detalles de Compra -->
+  @if (showPurchaseDetails && selectedPurchase) {
+    <app-purchase-detail-view
+      [purchase]="selectedPurchase"
+      (close)="closePurchaseDetails()"
+      (editPurchase)="editFromDetails($event)"
+    />
+  }
 </div>

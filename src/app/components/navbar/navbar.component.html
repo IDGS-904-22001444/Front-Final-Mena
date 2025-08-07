@@ -78,7 +78,7 @@
     <span>FAQs Administrador</span>
   </button>
 
-  <button *ngIf=" authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/customer-reviews">
+  <button mat-menu-item routerLink="/customer-reviews">
     <mat-icon>rate_review</mat-icon>
     <span>Reseñas de Clientes</span>
   </button>
@@ -102,14 +102,9 @@
     <span>Gestión de Cotizaciones</span>
   </button>
 
-  <button *ngIf="authService.getUserDetail()?.roles.includes('Cliente')" mat-menu-item routerLink="/quotations">
+  <button mat-menu-item routerLink="/quotations">
     <mat-icon>assignment</mat-icon>
     <span>Formulario de Cotización</span>
-  </button>
-
-    <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/production">
-    <mat-icon>production_quantity_limits</mat-icon>
-    <span>Gestion de produccion</span>
   </button>
 
     <button *ngIf="authService.getUserDetail()?.roles.includes('Admin')" mat-menu-item routerLink="/materials">

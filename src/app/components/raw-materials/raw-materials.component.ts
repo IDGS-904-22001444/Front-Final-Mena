@@ -125,4 +125,14 @@ export class RawMaterialsComponent implements OnInit {
   private showError(message: string): void {
     this.snackBar.open(message, 'Cerrar', { duration: 3000 });
   }
+
+  getStockColor(stock: number): string {
+    if (stock <= 1) {
+      return 'bg-red-50 border-red-200'; // Fondo rojo tenue para stock crítico (0-1)
+    } else if (stock < 5) {
+      return 'bg-orange-50 border-orange-200'; // Fondo naranja tenue para stock bajo (2-4)
+    } else {
+      return 'border-gray-200'; // Color normal para stock adecuado (5+)
+    }
+  }
 }

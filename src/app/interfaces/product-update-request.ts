@@ -4,4 +4,5 @@ export interface ProductUpdateRequest {
   salePrice: number;
   stock: number;
   status: number;
+  imageUrl?: string | null;
 }

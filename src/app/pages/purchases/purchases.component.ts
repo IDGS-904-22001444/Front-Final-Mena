@@ -10,6 +10,7 @@ import { PurchaseCreateRequest } from '../../interfaces/purchase-create-request'
 import { Purchase } from '../../interfaces/purchase';
 import { PurchaseFormComponent } from '../../components/purchase-form/purchase-form.component';
 import { PurchaseListComponent } from '../../components/purchase-list/purchase-list.component';
+import { PurchaseDetailViewComponent } from '../../components/purchase-detail-view/purchase-detail-view.component';
 
 @Component({
   selector: 'app-purchases',
@@ -21,7 +22,8 @@ import { PurchaseListComponent } from '../../components/purchase-list/purchase-l
     MatButtonModule,
     MatSnackBarModule,
     PurchaseFormComponent,
-    PurchaseListComponent
+    PurchaseListComponent,
+    PurchaseDetailViewComponent
   ],
   templateUrl: './purchases.component.html',
   styleUrl: './purchases.component.css'
@@ -43,6 +45,8 @@ export class PurchasesComponent implements OnInit {
   purchases$!: Observable<Purchase[]>;
   isEditing = false;
   editingPurchaseId: number = 0;
+  selectedPurchase: Purchase | null = null;
+  showPurchaseDetails = false;
 
   ngOnInit() {
     this.loadPurchases();
@@ -178,5 +182,21 @@ export class PurchasesComponent implements OnInit {
     this.isEditing = false;
     this.editingPurchaseId = 0;
     this.errorMessage = '';
+  }
+
+  // Métodos para manejar la visualización de detalles
+  viewPurchaseDetails(purchase: Purchase) {
+    this.selectedPurchase = purchase;
+    this.showPurchaseDetails = true;
+  }
+
+  closePurchaseDetails() {
+    this.showPurchaseDetails = false;
+    this.selectedPurchase = null;
+  }
+
+  editFromDetails(purchase: Purchase) {
+    this.closePurchaseDetails();
+    this.editPurchase(purchase);
   }
 }

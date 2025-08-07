@@ -44,7 +44,7 @@
               <input 
                 type="number" 
                 [value]="item.quantity"
-                (change)="updateQuantity(item.product.productId, +$any($event.target).value)"
+                (change)="onQuantityChange(item.product.productId, $event)"
                 [disabled]="isLoading"
                 min="1" 
                 [max]="item.product.stock"

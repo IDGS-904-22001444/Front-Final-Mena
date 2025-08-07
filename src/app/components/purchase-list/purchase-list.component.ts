@@ -15,6 +15,7 @@ export class PurchaseListComponent {
   @Input({ required: true }) purchases!: Purchase[] | null;
   @Output() editPurchase = new EventEmitter<Purchase>();
   @Output() deletePurchase = new EventEmitter<number>();
+  @Output() viewPurchaseDetails = new EventEmitter<Purchase>();
 
   // Método trackBy para optimizar el rendimiento de ngFor
   trackByPurchaseId(index: number, purchase: Purchase): number {
@@ -27,6 +28,10 @@ export class PurchaseListComponent {
 
   delete(id: number) {
     this.deletePurchase.emit(id);
+  }
+
+  viewDetails(purchase: Purchase) {
+    this.viewPurchaseDetails.emit(purchase);
   }
 
   getStatusClass(status: number): string {

@@ -1,4 +1,18 @@
 <div class="overflow-x-auto">
+  <!-- Mensaje informativo -->
+  <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <mat-icon class="text-blue-400">info</mat-icon>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-blue-700">
+          <strong>Consejo:</strong> Haz clic en cualquier fila para ver los detalles completos de la compra.
+        </p>
+      </div>
+    </div>
+  </div>
+
   @if (purchases && purchases.length > 0) {
     <table class="min-w-full">
       <thead class="bg-gray-50 border-b border-gray-200">
@@ -25,7 +39,7 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         @for (purchase of purchases; track trackByPurchaseId($index, purchase)) {
-          <tr class="hover:bg-gray-50 transition-colors">
+          <tr class="hover:bg-gray-50 transition-colors cursor-pointer relative" (click)="viewDetails(purchase)">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -71,15 +85,22 @@
               <div class="flex space-x-3">
                 <button 
                   type="button"
-                  (click)="edit(purchase)" 
-                  class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors flex items-center"
+                  (click)="viewDetails(purchase); $event.stopPropagation()" 
+                  class="bg-green-100 hover:bg-green-200 text-green-600 p-2 rounded-lg transition-colors flex items-center action-button"
+                  title="Ver detalles de la compra">
+                  <mat-icon class="w-4 h-4">visibility</mat-icon>
+                </button>
+                <button 
+                  type="button"
+                  (click)="edit(purchase); $event.stopPropagation()" 
+                  class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors flex items-center action-button"
                   title="Editar compra">
                   <mat-icon class="w-4 h-4">edit</mat-icon>
                 </button>
                 <button 
                   type="button"
-                  (click)="delete(purchase.id)" 
-                  class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors flex items-center"
+                  (click)="delete(purchase.id); $event.stopPropagation()" 
+                  class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors flex items-center action-button"
                   title="Eliminar compra">
                   <mat-icon class="w-4 h-4">delete</mat-icon>
                 </button>

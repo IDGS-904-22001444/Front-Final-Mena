@@ -1,0 +1,47 @@
+/* Estilos para filas clickeables */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  background-color: #f9fafb;
+}
+
+/* Transición suave para hover */
+.transition-colors {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Indicador visual de que la fila es clickeable */
+.cursor-pointer::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #d1d5db;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.cursor-pointer:hover::after {
+  opacity: 1;
+}
+
+/* Estilos para botones de acción */
+.action-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.action-button:hover {
+  transform: scale(1.05);
+}
+
+/* Prevenir que los clicks en botones propaguen el evento */
+.action-button:active {
+  transform: scale(0.95);
+}

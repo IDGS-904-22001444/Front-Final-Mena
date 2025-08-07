@@ -85,6 +85,17 @@ export class PurchaseService {
     );
   }
 
+  getPurchaseDetailsByPurchaseId(purchaseId: number): Observable<PurchaseDetail[]> {
+    return this.http.get<PurchaseDetail[]>(
+      `${this.apiUrl}/PurchaseDetails/by-purchase/${purchaseId}`, 
+      this.httpOptions
+    ).pipe(
+      retry(1),
+      tap(details => console.log(`Purchase details for purchase ${purchaseId} fetched:`, details)),
+      catchError(this.handleError)
+    );
+  }
+
   getPurchaseDetail(id: number): Observable<PurchaseDetail> {
     return this.http.get<PurchaseDetail>(
       `${this.apiUrl}/PurchaseDetails/${id}`, 

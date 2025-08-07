@@ -5,13 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { CartService, CartItem } from '../../services/cart.service';
+import { CreditCardFormComponent, CreditCardData } from '../../components/credit-card-form/credit-card-form.component';
 import Swal from 'sweetalert2';
 
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, CreditCardFormComponent],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -25,6 +26,7 @@ export class CartComponent implements OnInit, OnDestroy {
   isLoading = false;
   cartError = '';
   cartSuccess = '';
+  showPaymentForm = false;
   
   private destroy$ = new Subject<void>();
 
@@ -61,44 +63,69 @@ export class CartComponent implements OnInit, OnDestroy {
     this.cartService.updateQuantity(productId, quantity);
   }
 
+  onQuantityChange(productId: number, event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const quantity = parseInt(target.value, 10);
+    if (!isNaN(quantity) && quantity > 0) {
+      this.cartService.updateQuantity(productId, quantity);
+    }
+  }
+
   clearCart(): void {
     this.cartService.clearCart();
   }
 
   async confirmPurchase() {
-  this.isLoading = true;
-  try {
-    await this.cartService.confirmPurchase();
-    
-    // Mostrar alerta de éxito
-    Swal.fire({
-      icon: 'success',
-      title: '¡Compra realizada con éxito!',
-      text: 'En breve recibirás un correo electrónico con los detalles de tu compra.',
-      confirmButtonText: 'Aceptar',
-      confirmButtonColor: '#059669',
-      showConfirmButton: true,
-      timer: 3000,
-      timerProgressBar: true
-    });
-    
-    this.cartSuccess = 'Compra realizada con éxito';
-    this.cart = [];
-    this.closeCart();
-  } catch (error) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Hubo un problema al procesar tu compra. Por favor, intenta nuevamente.',
-      confirmButtonText: 'Cerrar',
-      confirmButtonColor: '#DC2626'
-    });
-    this.cartError = 'Error al procesar la compra';
-    console.error(error);
-  } finally {
-    this.isLoading = false;
+    this.showPaymentForm = true;
   }
-}
+
+  onCardSubmitted(cardData: CreditCardData) {
+    this.processPayment(cardData);
+  }
+
+  onPaymentCancelled() {
+    this.showPaymentForm = false;
+  }
+
+  async processPayment(cardData: CreditCardData) {
+    this.isLoading = true;
+    try {
+      // Aquí normalmente enviarías los datos de la tarjeta a tu backend
+      // Por ahora simulamos el procesamiento
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      await this.cartService.confirmPurchase();
+      
+      // Mostrar alerta de éxito
+      Swal.fire({
+        icon: 'success',
+        title: '¡Pago procesado con éxito!',
+        text: 'Tu compra ha sido confirmada. En breve recibirás un correo electrónico con los detalles.',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#059669',
+        showConfirmButton: true,
+        timer: 3000,
+        timerProgressBar: true
+      });
+      
+      this.cartSuccess = 'Compra realizada con éxito';
+      this.cart = [];
+      this.showPaymentForm = false;
+      this.closeCart();
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en el pago',
+        text: 'Hubo un problema al procesar tu pago. Por favor, verifica los datos de tu tarjeta e intenta nuevamente.',
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#DC2626'
+      });
+      this.cartError = 'Error al procesar el pago';
+      console.error(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
   closeCart(): void {
     this.closeModal.emit();

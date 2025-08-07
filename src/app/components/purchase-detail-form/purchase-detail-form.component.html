@@ -2,78 +2,92 @@
   <form (ngSubmit)="onSubmit()">
     <!-- ID de Compra -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [(ngModel)]="purchaseDetail.purchaseId" 
+        [(ngModel)]="purchaseDetail.purchaseId"
         name="purchaseId"
         placeholder="ID de Compra*"
         required
         min="1"
         class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">receipt</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+        >receipt</mat-icon
+      >
     </div>
 
     <!-- ID de Materia Prima -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [(ngModel)]="purchaseDetail.rawMaterialId" 
+        [(ngModel)]="purchaseDetail.rawMaterialId"
         name="rawMaterialId"
         placeholder="ID de Materia Prima*"
         required
         min="1"
         class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">inventory_2</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+        >inventory_2</mat-icon
+      >
     </div>
 
     <!-- Cantidad -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [(ngModel)]="purchaseDetail.quantity" 
+        [(ngModel)]="purchaseDetail.quantity"
         name="quantity"
         placeholder="Cantidad*"
         required
         min="1"
-        (input)="calculateSubtotal()"
+        (ngModelChange)="calculateSubtotal()"
         class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">format_list_numbered</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+        >format_list_numbered</mat-icon
+      >
     </div>
 
     <!-- Precio Unitario -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [(ngModel)]="purchaseDetail.unitPrice" 
-        name="unitPrice"
-        placeholder="Precio Unitario*"
+        [(ngModel)]="purchaseDetail.quantity"
+        name="quantity"
+        placeholder="Cantidad*"
         required
-        min="0"
-        step="0.01"
-        (input)="calculateSubtotal()"
+        min="1"
+        (ngModelChange)="calculateSubtotal()"
         class="w-full px-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">attach_money</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+        >attach_money</mat-icon
+      >
     </div>
 
     <!-- Subtotal (solo lectura) -->
     <div class="relative mb-6">
-      <input 
+      <input
         type="number"
-        [value]="purchaseDetail.subtotal || 0" 
+        [value]="purchaseDetail.subtotal || 0"
         readonly
         placeholder="Subtotal"
         class="w-full px-12 py-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 text-base cursor-not-allowed"
       />
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">calculate</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+        >calculate</mat-icon
+      >
     </div>
 
     <!-- Estado -->
     <div class="relative mb-6">
-      <select 
+      <select
         [(ngModel)]="purchaseDetail.status"
         name="status"
         required
@@ -83,38 +97,49 @@
         <option value="1">Completado</option>
         <option value="2">Cancelado</option>
       </select>
-      <mat-icon class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500">check_circle</mat-icon>
-      <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
+      <mat-icon
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"
+        >check_circle</mat-icon
+      >
+      <mat-icon
+        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+        >expand_more</mat-icon
+      >
     </div>
 
     @if(errorMessage) {
-      <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-md">
-        <div class="flex items-center">
-          <mat-icon class="text-red-500 mr-2">error</mat-icon>
-          <span class="text-base text-red-700">{{errorMessage}}</span>
-        </div>
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-md">
+      <div class="flex items-center">
+        <mat-icon class="text-red-500 mr-2">error</mat-icon>
+        <span class="text-base text-red-700">{{ errorMessage }}</span>
       </div>
+    </div>
     }
-    
+
     <div class="flex gap-4">
-      <button 
-        [disabled]="!purchaseDetail.purchaseId || !purchaseDetail.rawMaterialId || !purchaseDetail.quantity || !purchaseDetail.unitPrice" 
-        type="submit" 
+      <button
+        [disabled]="
+          !purchaseDetail.purchaseId ||
+          !purchaseDetail.rawMaterialId ||
+          !purchaseDetail.quantity ||
+          !purchaseDetail.unitPrice
+        "
+        type="submit"
         class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
       >
-        <mat-icon>{{ isEditing ? 'save' : 'add' }}</mat-icon>
-        <span>{{ isEditing ? 'Actualizar' : 'Agregar' }} Detalle</span>
+        <mat-icon>{{ isEditing ? "save" : "add" }}</mat-icon>
+        <span>{{ isEditing ? "Actualizar" : "Agregar" }} Detalle</span>
       </button>
 
       @if(isEditing) {
-        <button 
-          type="button"
-          (click)="onCancel()"
-          class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-        >
-          <mat-icon>cancel</mat-icon>
-          <span>Cancelar</span>
-        </button>
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+      >
+        <mat-icon>cancel</mat-icon>
+        <span>Cancelar</span>
+      </button>
       }
     </div>
   </form>

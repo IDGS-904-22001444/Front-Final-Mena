@@ -132,6 +132,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.closePurchaseModal();
   }
 
+  goTo(path: string) {
+    this.router.navigate([path]);
+  }
+
   // --- Modal de compra individual ---
   openPurchaseModal(product: Product) {
     this.selectedProduct = product;

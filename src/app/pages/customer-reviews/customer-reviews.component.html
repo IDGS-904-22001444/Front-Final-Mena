@@ -6,12 +6,13 @@
       <p class="mt-2 text-gray-600">Comparte tu experiencia con nuestros productos ReptiTrack</p>
     </div>
 
-    <!-- Formulario para nueva reseña -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-      <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-        <mat-icon class="mr-2 text-green-600">rate_review</mat-icon>
-        Deja tu Reseña
-      </h2>
+    <!-- Formulario para nueva reseña - solo visible si está logueado -->
+    @if (authService.isLoggedIn()) {
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+          <mat-icon class="mr-2 text-green-600">rate_review</mat-icon>
+          Deja tu Reseña
+        </h2>
       
       <form (ngSubmit)="submitReview()" class="space-y-6">
         <!-- Comentario -->
@@ -76,6 +77,21 @@
         </div>
       </form>
     </div>
+    } @else {
+      <!-- Mensaje para usuarios no logueados -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+        <div class="flex items-center">
+          <mat-icon class="text-blue-600 mr-3">info</mat-icon>
+          <div>
+            <h3 class="text-lg font-semibold text-blue-800 mb-1">Inicia sesión para dejar una reseña</h3>
+            <p class="text-blue-700">Para compartir tu experiencia con nuestros productos, necesitas iniciar sesión.</p>
+            <a routerLink="/login" class="inline-block mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
+              Iniciar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    }
 
     <!-- Lista de reseñas existentes -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">

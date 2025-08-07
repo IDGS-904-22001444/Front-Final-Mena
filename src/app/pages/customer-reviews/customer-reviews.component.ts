@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CustomerReviewService } from '../../services/customer-review.service';
@@ -10,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-customer-reviews',
   standalone: true,
-  imports: [FormsModule, CommonModule, MatIconModule, MatSnackBarModule],
+  imports: [FormsModule, CommonModule, RouterModule, MatIconModule, MatSnackBarModule],
   templateUrl: './customer-reviews.component.html',
   styleUrl: './customer-reviews.component.css'
 })
@@ -23,14 +24,19 @@ export class CustomerReviewsComponent implements OnInit {
 
   constructor(
     private reviewService: CustomerReviewService,
-    private authService: AuthService,
+    public authService: AuthService,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
-    const user = this.authService.getUserDetail();
-    this.clientId = user?.id || '';
-    console.log('Cliente ID:', this.clientId); // Para debugging
+    // Verificar si el usuario está logueado
+    if (this.authService.isLoggedIn()) {
+      const user = this.authService.getUserDetail();
+      this.clientId = user?.id || '';
+      console.log('Cliente ID:', this.clientId); // Para debugging
+    } else {
+      console.log('Usuario no logueado - solo puede ver reseñas');
+    }
     this.loadReviews();
   }
 

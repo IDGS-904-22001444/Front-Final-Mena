@@ -119,8 +119,8 @@
             </div>
           } @else {
             <div class="grid gap-4">
-              @for (material of rawMaterials; track material.id) {
-                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                             @for (material of rawMaterials; track material.id) {
+                 <div class="border rounded-lg p-4 hover:bg-gray-50" [ngClass]="getStockColor(material.stock)">
                   <div class="flex justify-between items-start">
                     <div>
                       <h3 class="font-semibold text-lg text-gray-800">

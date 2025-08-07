@@ -3,6 +3,22 @@
     @for(product of products; track product.productId) {
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
         <div class="flex items-start justify-between">
+          <!-- Imagen del producto -->
+          <div class="flex-shrink-0 mr-4">
+            @if (product.imageUrl) {
+              <img 
+                [src]="product.imageUrl" 
+                [alt]="product.name"
+                class="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
+                onerror="this.src='https://via.placeholder.com/96x96/4CAF50/FFFFFF?text=Sin+Imagen'"
+              />
+            } @else {
+              <div class="w-24 h-24 bg-gray-100 rounded-lg border-2 border-gray-200 flex items-center justify-center">
+                <mat-icon class="text-gray-400 text-2xl">image</mat-icon>
+              </div>
+            }
+          </div>
+
           <div class="flex-1">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-xl font-bold text-gray-800">{{ product.name }}</h3>

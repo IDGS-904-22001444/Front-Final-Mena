@@ -2,14 +2,21 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ProductFormComponent } from '../../components/product-form/product-form.component';
 import { ProductListComponent } from '../../components/product-list/product-list.component';
 import { ProductService } from '../../services/product.service';
+import { ProductionService } from '../../services/production.service';
 import { ProductCreateRequest } from '../../interfaces/product-create-request';
 import { ProductUpdateRequest } from '../../interfaces/product-update-request';
+import { ProductionStartRequest } from '../../interfaces/production-start-request';
 import { Product } from '../../interfaces/product';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -22,17 +29,32 @@ import { Observable } from 'rxjs';
     CommonModule,
     MatIconModule,
     MatButtonModule,
+    MatTabsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
 })
 export class ProductsComponent implements OnInit {
   productService = inject(ProductService);
+  productionService = inject(ProductionService);
   snackBar = inject(MatSnackBar);
 
   errorMessage = '';
   isEditing = false;
   editingProduct: Product | null = null;
+
+  // Variables para producción
+  showProductionForm = false;
+  productionError = '';
+  productionSuccess = '';
+  productionData: ProductionStartRequest = {
+    productId: 0,
+    quantityToProduce: 1
+  };
 
   products$: Observable<Product[]> = this.productService.getProducts();
 
@@ -102,6 +124,63 @@ export class ProductsComponent implements OnInit {
 
   cancelEdit() {
     this.resetForm();
+  }
+
+  // Métodos para producción
+  toggleProductionForm() {
+    this.showProductionForm = !this.showProductionForm;
+    if (!this.showProductionForm) {
+      this.resetProductionForm();
+    }
+  }
+
+  startProduction() {
+    if (!this.isProductionFormValid()) {
+      return;
+    }
+
+    this.productionService.startProduction(this.productionData).subscribe({
+      next: (response) => {
+        this.productionSuccess = 'Producción iniciada exitosamente';
+        this.snackBar.open(this.productionSuccess, 'Cerrar', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+        this.resetProductionForm();
+        this.loadProducts(); // Recargar productos para ver el stock actualizado
+      },
+      error: (error) => {
+        this.productionError = error.error?.message || 'Error al iniciar la producción';
+        this.snackBar.open(this.productionError, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
+  }
+
+  isProductionFormValid(): boolean {
+    if (!this.productionData.productId) {
+      this.productionError = 'Debe seleccionar un producto';
+      return false;
+    }
+    
+    if (!this.productionData.quantityToProduce || this.productionData.quantityToProduce <= 0) {
+      this.productionError = 'La cantidad debe ser mayor a 0';
+      return false;
+    }
+    
+    this.productionError = '';
+    return true;
+  }
+
+  resetProductionForm(): void {
+    this.productionData = {
+      productId: 0,
+      quantityToProduce: 1
+    };
+    this.productionError = '';
+    this.productionSuccess = '';
   }
 
   private resetForm() {

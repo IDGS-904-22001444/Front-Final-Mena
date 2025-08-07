@@ -1,0 +1,160 @@
+<div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-auto">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">Información de Pago</h3>
+    <p class="text-gray-600">Ingresa los datos de tu tarjeta de crédito</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Número de Tarjeta -->
+    <div class="relative">
+      <input 
+        type="text" 
+        [(ngModel)]="cardData.cardNumber"
+        name="cardNumber"
+        (ngModelChange)="onCardNumberChange($event)"
+        placeholder="0000 0000 0000 0000"
+        maxlength="19"
+        class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300"
+      />
+      <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">credit_card</mat-icon>
+      
+      @if(errors['cardNumber']) {
+        <div class="text-red-500 text-sm mt-1 flex items-center">
+          <mat-icon class="text-xs mr-1">error</mat-icon>
+          {{ errors['cardNumber'] }}
+        </div>
+      }
+    </div>
+
+    <!-- Nombre del Titular -->
+    <div class="relative">
+      <input 
+        type="text" 
+        [(ngModel)]="cardData.cardholderName"
+        name="cardholderName"
+        placeholder="NOMBRE APELLIDO"
+        class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300"
+      />
+      <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">person</mat-icon>
+      
+      @if(errors['cardholderName']) {
+        <div class="text-red-500 text-sm mt-1 flex items-center">
+          <mat-icon class="text-xs mr-1">error</mat-icon>
+          {{ errors['cardholderName'] }}
+        </div>
+      }
+    </div>
+
+    <!-- Fecha de Expiración y CVV -->
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Mes -->
+      <div class="relative">
+        <select 
+          [(ngModel)]="cardData.expiryMonth"
+          name="expiryMonth"
+          class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300 appearance-none"
+        >
+          <option value="">MM</option>
+          @for(month of getMonths(); track month) {
+            <option [value]="month.toString().padStart(2, '0')">{{ month.toString().padStart(2, '0') }}</option>
+          }
+        </select>
+        <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
+        
+        @if(errors['expiryMonth']) {
+          <div class="text-red-500 text-sm mt-1 flex items-center">
+            <mat-icon class="text-xs mr-1">error</mat-icon>
+            {{ errors['expiryMonth'] }}
+          </div>
+        }
+      </div>
+
+      <!-- Año -->
+      <div class="relative">
+        <select 
+          [(ngModel)]="cardData.expiryYear"
+          name="expiryYear"
+          class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300 appearance-none"
+        >
+          <option value="">YYYY</option>
+          @for(year of getYears(); track year) {
+            <option [value]="year">{{ year }}</option>
+          }
+        </select>
+        <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</mat-icon>
+        
+        @if(errors['expiryYear']) {
+          <div class="text-red-500 text-sm mt-1 flex items-center">
+            <mat-icon class="text-xs mr-1">error</mat-icon>
+            {{ errors['expiryYear'] }}
+          </div>
+        }
+      </div>
+
+      <!-- CVV -->
+      <div class="relative">
+        <input 
+          type="password" 
+          [(ngModel)]="cardData.cvv"
+          name="cvv"
+          placeholder="CVV"
+          maxlength="4"
+          class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300"
+        />
+        <mat-icon class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">lock</mat-icon>
+        
+        @if(errors['cvv']) {
+          <div class="text-red-500 text-sm mt-1 flex items-center">
+            <mat-icon class="text-xs mr-1">error</mat-icon>
+            {{ errors['cvv'] }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Error de fecha de expiración -->
+    @if(errors['expiryDate']) {
+      <div class="text-red-500 text-sm flex items-center">
+        <mat-icon class="text-xs mr-1">error</mat-icon>
+        {{ errors['expiryDate'] }}
+      </div>
+    }
+
+    <!-- Información de seguridad -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div class="flex items-start">
+        <mat-icon class="text-blue-500 mr-2 mt-0.5">security</mat-icon>
+        <div class="text-sm text-blue-700">
+          <p class="font-semibold mb-1">Tu información está segura</p>
+          <p>Utilizamos encriptación SSL para proteger tus datos de pago.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex gap-3 pt-4">
+      <button 
+        type="button"
+        (click)="onCancel()"
+        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-lg transition-colors"
+      >
+        Cancelar
+      </button>
+      
+      <button 
+        type="submit"
+        [disabled]="isLoading"
+        class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+      >
+        @if(isLoading) {
+          <mat-icon class="animate-spin">refresh</mat-icon>
+          Procesando...
+        } @else {
+          <mat-icon>payment</mat-icon>
+          Pagar
+        }
+      </button>
+    </div>
+  </form>
+</div>
