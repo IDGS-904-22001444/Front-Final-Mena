@@ -27,7 +27,10 @@ export class SalesAdminComponent implements OnInit {
   saleService = inject(SaleService);
   snackBar = inject(MatSnackBar);
   
-  sales$!: Observable<Sale[]>;
+   sales$!: Observable<Sale[]>;
+  selectedSale: Sale | null = null;
+  showSaleDetail = false;
+  isLoadingDetail = false;
 
   ngOnInit() {
     this.loadSales();
@@ -82,5 +85,25 @@ export class SalesAdminComponent implements OnInit {
       style: 'currency',
       currency: 'MXN'
     }).format(price);
+  }
+
+  viewSaleDetail(sale: Sale) {
+    this.isLoadingDetail = true;
+    this.saleService.getSale(sale.id).subscribe({
+      next: (detail) => {
+        this.selectedSale = detail;
+        this.showSaleDetail = true;
+        this.isLoadingDetail = false;
+      },
+      error: () => {
+        this.snackBar.open('Error al cargar el detalle de la venta', 'Cerrar', { duration: 3000 });
+        this.isLoadingDetail = false;
+      }
+    });
+  }
+
+  closeSaleDetail() {
+    this.showSaleDetail = false;
+    this.selectedSale = null;
   }
 }

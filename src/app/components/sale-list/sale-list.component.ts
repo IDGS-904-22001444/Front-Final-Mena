@@ -16,6 +16,8 @@ export class SaleListComponent {
   @Input() isAdmin: boolean = false;
   @Output() editSale = new EventEmitter<Sale>();
   @Output() deleteSale = new EventEmitter<number>();
+  @Output() viewSaleDetail = new EventEmitter<Sale>();
+
 
   trackBySaleId(index: number, sale: Sale): number {
     return sale.id;
@@ -45,6 +47,10 @@ export class SaleListComponent {
       default: return 'Desconocido';
     }
   }
+
+  onViewDetail(sale: Sale) {
+  this.viewSaleDetail.emit(sale);
+}
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {

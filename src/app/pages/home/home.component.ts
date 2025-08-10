@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   cartService = inject(CartService);
   router = inject(Router);
   http = inject(HttpClient);
-
+  currentProduct: Product | null = null;
   products: Product[] = [];
   cartItemsCount = 0;
 
@@ -117,15 +117,34 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   loadProducts() {
-    this.productService.getProducts().subscribe({
-      next: (products) => {
-        this.products = products;
-      },
-      error: () => {
-        this.products = [];
-      },
-    });
-  }
+  this.productService.getProducts().subscribe({
+    next: (products) => {
+      this.products = products.filter(p => p.status === 1);
+      if (this.products.length > 0) {
+        this.loadProductDetails(this.products[this.productCarouselIndex].productId);
+      }
+    },
+    error: (error) => console.error('Error al cargar productos', error)
+  });
+}
+
+loadProductDetails(productId: number) {
+  this.productService.getProduct(productId).subscribe({
+    next: (product) => {
+      this.currentProduct = product;
+    },
+    error: (error) => {
+      console.error('Error al cargar detalles del producto', error);
+      // Usar la versión básica del producto como fallback
+      this.currentProduct = this.products[this.productCarouselIndex];
+    }
+  });
+}
+
+
+
+
+
   addToCart(product: Product, quantity: number) {
     if (!product || quantity < 1) return;
     this.cartService.addToCart(product, quantity);
@@ -209,20 +228,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   productCarouselIndex = 0;
 
-  nextProduct() {
-    if (this.products.length > 0) {
-      this.productCarouselIndex =
-        (this.productCarouselIndex + 1) % this.products.length;
-    }
-  }
+nextProduct() {
+  this.productCarouselIndex = (this.productCarouselIndex + 1) % this.products.length;
+  this.loadProductDetails(this.products[this.productCarouselIndex].productId);
+}
 
   prevProduct() {
-    if (this.products.length > 0) {
-      this.productCarouselIndex =
-        (this.productCarouselIndex - 1 + this.products.length) %
-        this.products.length;
-    }
-  }
+  this.productCarouselIndex = this.productCarouselIndex === 0
+    ? this.products.length - 1
+    : this.productCarouselIndex - 1;
+  this.loadProductDetails(this.products[this.productCarouselIndex].productId);
+}
 
   // Métodos del carrusel
   nextImage(): void {

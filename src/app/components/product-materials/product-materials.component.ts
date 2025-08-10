@@ -7,36 +7,43 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { ProductMaterialService } from '../../services/product-material.service';
-import { ProductMaterial, ProductMaterialCreateRequest, Product, RawMaterial } from '../../interfaces/product-material';
+import {
+  ProductMaterial,
+  ProductMaterialCreateRequest,
+  Product,
+  RawMaterial,
+} from '../../interfaces/product-material';
 import { RawMaterialsComponent } from '../raw-materials/raw-materials.component';
-
 
 @Component({
   selector: 'app-product-materials',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MatIconModule, 
+    CommonModule,
+    FormsModule,
+    MatIconModule,
     MatButtonModule,
     MatSelectModule,
     MatInputModule,
-    RawMaterialsComponent
+    RawMaterialsComponent,
   ],
   templateUrl: './product-materials.component.html',
-  styleUrls: ['./product-materials.component.css']
+  styleUrls: ['./product-materials.component.css'],
 })
 export class ProductMaterialsComponent implements OnInit {
-    activeTab: 'assignments' | 'materials' = 'assignments';
+  activeTab: 'assignments' | 'materials' = 'assignments';
   productMaterials: ProductMaterial[] = [];
   products: Product[] = [];
   rawMaterials: RawMaterial[] = [];
-  
+  groupedMaterials: { [productId: number]: ProductMaterial[] } = {};
+  filteredProducts: Product[] = [];
+
+
   formData: ProductMaterialCreateRequest = {
     productId: 0,
     rawMaterialId: 0,
     requiredQuantity: 0,
-    status: 1
+    status: 1,
   };
 
   constructor(
@@ -49,20 +56,37 @@ export class ProductMaterialsComponent implements OnInit {
   }
 
   loadData(): void {
-    this.productMaterialService.getProductMaterials().subscribe({
-      next: (data) => this.productMaterials = data,
-      error: (error) => this.showError('Error al cargar asignaciones')
-    });
+  this.productMaterialService.getProductMaterials().subscribe({
+    next: (data) => {
+      this.productMaterials = data;
+      this.groupMaterialsByProduct();
+    },
+    error: (error) => this.showError('Error al cargar asignaciones'),
+  });
 
-    this.productMaterialService.getProducts().subscribe({
-      next: (data) => this.products = data,
-      error: (error) => this.showError('Error al cargar productos')
-    });
+  this.productMaterialService.getProducts().subscribe({
+    next: (data) => {
+      this.products = data;
+      this.filteredProducts = this.products.filter(p => !!p);
+    },
+    error: (error) => this.showError('Error al cargar productos'),
+  });
 
-    this.productMaterialService.getRawMaterials().subscribe({
-      next: (data) => this.rawMaterials = data,
-      error: (error) => this.showError('Error al cargar materiales')
-    });
+  this.productMaterialService.getRawMaterials().subscribe({
+    next: (data) => (this.rawMaterials = data),
+    error: (error) => this.showError('Error al cargar materiales'),
+  });
+}
+
+  groupMaterialsByProduct(): void {
+    this.groupedMaterials = {};
+    for (const material of this.productMaterials) {
+      const pid = material.product?.productId ?? material.productId;
+      if (!this.groupedMaterials[pid]) {
+        this.groupedMaterials[pid] = [];
+      }
+      this.groupedMaterials[pid].push(material);
+    }
   }
 
   onSubmit(): void {
@@ -72,7 +96,7 @@ export class ProductMaterialsComponent implements OnInit {
         this.resetForm();
         this.loadData();
       },
-      error: (error) => this.showError('Error al asignar material')
+      error: (error) => this.showError('Error al asignar material'),
     });
   }
 
@@ -83,7 +107,7 @@ export class ProductMaterialsComponent implements OnInit {
           this.showSuccess('Asignación eliminada');
           this.loadData();
         },
-        error: (error) => this.showError('Error al eliminar')
+        error: (error) => this.showError('Error al eliminar'),
       });
     }
   }
@@ -93,7 +117,7 @@ export class ProductMaterialsComponent implements OnInit {
       productId: 0,
       rawMaterialId: 0,
       requiredQuantity: 0,
-      status: 1
+      status: 1,
     };
   }
 

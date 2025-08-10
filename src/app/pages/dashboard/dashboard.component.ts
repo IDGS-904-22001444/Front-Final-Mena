@@ -7,8 +7,9 @@ import { AuthService } from '../../services/auth.service';
 import { PurchaseService } from '../../services/purchase.service';
 import { ProductService } from '../../services/product.service';
 import { QuotationService } from '../../services/quotation.service';
+import { SaleService } from '../../services/sale.service';
 import { NgChartsModule } from 'ng2-charts';
-import { ChartOptions, ChartType, ChartData, ChartDataset } from 'chart.js';
+import { ChartOptions, ChartType, ChartData, ChartDataset, ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,21 +28,85 @@ export class DashboardComponent implements OnInit {
 
   ventasMensuales: number = 0;
   ventasRecientes: any[] = [];
+  comprasRecientes: any[] = [];
   cotizacionesPorTipo: { tipo: string, cantidad: number }[] = [];
 
   public userFullName: string = '';
 
-  // Gráfica de barras (ventas mensuales)
+  // Gráfica de barras (ventas a clientes)
   barChartLabels: string[] = [];
-  barChartData: ChartDataset<'bar'>[] = [
-    { data: [], label: 'Ventas' }
-  ];
-  barChartOptions: ChartOptions = {
+  barChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [
+      { 
+        data: [], 
+        label: 'Ventas',
+        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+        borderColor: 'rgba(34, 197, 94, 1)',
+        borderWidth: 2
+      }
+    ]
+  };
+  barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
         position: 'top'
+      },
+      title: {
+        display: true,
+        text: 'Ventas a Clientes por Día del Mes'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
+      }
+    }
+  };
+
+  // Gráfica lineal (compras a proveedores)
+  lineChartLabels: string[] = [];
+  lineChartData: ChartData<'line'> = {
+    labels: [],
+    datasets: [
+      { 
+        data: [], 
+        label: 'Compras a Proveedores',
+        backgroundColor: 'rgba(245, 158, 66, 0.2)',
+        borderColor: 'rgba(245, 158, 66, 1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  };
+  lineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      },
+      title: {
+        display: true,
+        text: 'Total de Compras a Proveedores por Día'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return '$' + value;
+          }
+        }
       }
     }
   };
@@ -51,15 +116,34 @@ export class DashboardComponent implements OnInit {
   doughnutChartData: ChartData<'doughnut'> = {
     labels: [],
     datasets: [
-      { data: [], backgroundColor: ['#F59E42', '#FBBF24', '#F87171', '#34D399', '#60A5FA'] }
+      { 
+        data: [], 
+        backgroundColor: [
+          '#F59E42', 
+          '#FBBF24', 
+          '#F87171', 
+          '#34D399', 
+          '#60A5FA',
+          '#A78BFA',
+          '#FB7185',
+          '#FCD34D'
+        ],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }
     ]
   };
-  doughnutChartOptions: ChartOptions = {
+  doughnutChartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
-        position: 'top'
+        position: 'right'
+      },
+      title: {
+        display: true,
+        text: 'Distribución por Tipo de Reptil'
       }
     }
   };
@@ -69,6 +153,7 @@ export class DashboardComponent implements OnInit {
     private purchaseService: PurchaseService,
     private productService: ProductService,
     private quotationService: QuotationService,
+    private saleService: SaleService,
     private router: Router
   ) {}
 
@@ -94,34 +179,88 @@ export class DashboardComponent implements OnInit {
       ).length;
     });
 
-    // Compras pendientes y ventas mensuales/recientes
+    // Ventas a clientes
+    this.saleService.getAllSales().subscribe((sales) => {
+      // Ventas del mes actual
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const ventasMes = sales.filter((s: any) => {
+        const fecha = new Date(s.saleDate);
+        return fecha.getMonth() === currentMonth && fecha.getFullYear() === currentYear;
+      });
+
+      // Gráfica de barras: ventas por día del mes actual
+      const diasVentas: { [dia: string]: number } = {};
+      ventasMes.forEach((venta: any) => {
+        const fecha = new Date(venta.saleDate);
+        const dia = fecha.getDate().toString();
+        diasVentas[dia] = (diasVentas[dia] || 0) + 1;
+      });
+      this.barChartLabels = Object.keys(diasVentas).sort((a, b) => +a - +b);
+      this.barChartData = {
+        labels: this.barChartLabels,
+        datasets: [
+          { 
+            data: this.barChartLabels.map(dia => diasVentas[dia]), 
+            label: 'Ventas',
+            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+            borderColor: 'rgba(34, 197, 94, 1)',
+            borderWidth: 2
+          }
+        ]
+      };
+
+      // Ventas recientes para la tabla
+      this.ventasRecientes = sales
+        .sort((a: any, b: any) => new Date(b.saleDate).getTime() - new Date(a.saleDate).getTime())
+        .slice(0, 10);
+    });
+
+    // Compras a proveedores
     this.purchaseService.getPurchases().subscribe((purchases) => {
       this.dashboardData.comprasPendientes = purchases.filter(
         (p: any) => p.status === 0
       ).length;
 
-      // Ventas mensuales y recientes
+      // Compras del mes actual
       const now = new Date();
       const currentMonth = now.getMonth();
       const currentYear = now.getFullYear();
-      const ventasMes = purchases.filter((p: any) => {
+      const comprasMes = purchases.filter((p: any) => {
         const fecha = new Date(p.purchaseDate);
         return fecha.getMonth() === currentMonth && fecha.getFullYear() === currentYear;
       });
-      this.ventasMensuales = ventasMes.length;
-      this.ventasRecientes = ventasMes.slice(0, 5);
+      this.ventasMensuales = comprasMes.length;
+      this.ventasRecientes = comprasMes.slice(0, 5);
+      
+      // Compras recientes para la tabla
+      this.comprasRecientes = purchases
+        .sort((a: any, b: any) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime())
+        .slice(0, 10);
 
-      // Gráfica de barras: ventas por día del mes actual
-      const dias: { [dia: string]: number } = {};
-      ventasMes.forEach((venta: any) => {
-        const fecha = new Date(venta.purchaseDate);
+      // Gráfica lineal: total de compras por día del mes actual
+      const diasCompras: { [dia: string]: number } = {};
+      comprasMes.forEach((compra: any) => {
+        const fecha = new Date(compra.purchaseDate);
         const dia = fecha.getDate().toString();
-        dias[dia] = (dias[dia] || 0) + 1;
+        diasCompras[dia] = (diasCompras[dia] || 0) + compra.total;
       });
-      this.barChartLabels = Object.keys(dias).sort((a, b) => +a - +b);
-      this.barChartData = [
-        { data: this.barChartLabels.map(dia => dias[dia]), label: 'Ventas' }
-      ];
+      this.lineChartLabels = Object.keys(diasCompras).sort((a, b) => +a - +b);
+      this.lineChartData = {
+        labels: this.lineChartLabels,
+        datasets: [
+          { 
+            data: this.lineChartLabels.map(dia => diasCompras[dia]), 
+            label: 'Compras a Proveedores',
+            backgroundColor: 'rgba(245, 158, 66, 0.2)',
+            borderColor: 'rgba(245, 158, 66, 1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      };
     });
 
     // Productos disponibles
@@ -152,7 +291,18 @@ export class DashboardComponent implements OnInit {
         datasets: [
           {
             data: this.cotizacionesPorTipo.map(item => item.cantidad),
-            backgroundColor: ['#F59E42', '#FBBF24', '#F87171', '#34D399', '#60A5FA']
+            backgroundColor: [
+              '#F59E42', 
+              '#FBBF24', 
+              '#F87171', 
+              '#34D399', 
+              '#60A5FA',
+              '#A78BFA',
+              '#FB7185',
+              '#FCD34D'
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
           }
         ]
       };

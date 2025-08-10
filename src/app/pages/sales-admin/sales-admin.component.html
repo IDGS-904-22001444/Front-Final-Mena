@@ -3,14 +3,14 @@
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-800">Gestión de Ventas</h1>
-      <p class="text-gray-600 mt-2">
-        Administra todas las ventas del sistema
-      </p>
+      <p class="text-gray-600 mt-2">Administra todas las ventas del sistema</p>
     </div>
 
     <!-- Estadísticas de ventas -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+      <div
+        class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500"
+      >
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-green-700 font-medium">Total de Ventas</p>
@@ -38,10 +38,14 @@
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
+      <div
+        class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-purple-700 font-medium">Ventas Completadas</p>
+            <p class="text-sm text-purple-700 font-medium">
+              Ventas Completadas
+            </p>
             <p class="text-3xl font-bold text-purple-800">
               {{ getCompletedSales(sales$ | async) }}
             </p>
@@ -52,7 +56,9 @@
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-orange-500">
+      <div
+        class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-orange-500"
+      >
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-orange-700 font-medium">Ventas Pendientes</p>
@@ -86,7 +92,74 @@
           [isAdmin]="true"
           (editSale)="editSale($event)"
           (deleteSale)="deleteSale($event)"
+          (viewSaleDetail)="viewSaleDetail($event)"
         />
+      </div>
+
+      <!-- Modal o sección de detalle -->
+      <div
+        *ngIf="showSaleDetail && selectedSale"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 relative"
+        >
+          <button
+            (click)="closeSaleDetail()"
+            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          <h3 class="text-2xl font-bold mb-4">
+            Detalle de Venta #{{ selectedSale.id }}
+          </h3>
+          <div *ngIf="isLoadingDetail" class="text-center py-8">
+            <mat-icon class="animate-spin text-4xl text-green-600 mb-4"
+              >refresh</mat-icon
+            >
+            <p class="text-gray-500">Cargando detalle...</p>
+          </div>
+          <div *ngIf="!isLoadingDetail">
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Cliente:</span>
+              <span class="ml-2">{{ selectedSale.client?.fullName }}</span>
+              <div class="text-sm text-gray-500">
+                {{ selectedSale.client?.email }}
+              </div>
+            </div>
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Producto:</span>
+              <span class="ml-2">{{ selectedSale.product?.name }}</span>
+              <div class="text-sm text-gray-500">
+                {{ selectedSale.product?.description }}
+              </div>
+              <div class="text-xs text-gray-400">
+                Precio unitario:
+                {{ formatPrice(selectedSale.product?.salePrice || 0) }}
+              </div>
+            </div>
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Cantidad:</span>
+              <span class="ml-2">{{ selectedSale.quantity }}</span>
+            </div>
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Total:</span>
+              <span class="ml-2">{{ formatPrice(selectedSale.total) }}</span>
+            </div>
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Fecha de Venta:</span>
+              <span class="ml-2">{{
+                selectedSale.saleDate | date : "medium"
+              }}</span>
+            </div>
+            <div class="mb-4">
+              <span class="font-semibold text-gray-700">Estado:</span>
+              <span class="ml-2">{{
+                selectedSale.status === 1 ? "Completada" : "Pendiente"
+              }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

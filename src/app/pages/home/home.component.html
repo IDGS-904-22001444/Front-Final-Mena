@@ -483,119 +483,76 @@
           <!-- Sección de Producto -->
           <!-- ...existing code... -->
           <div class="max-w-6xl mx-auto bg-white/90 p-12 rounded-2xl shadow-xl">
-            <div class="flex flex-col items-center space-y-8">
-              <h3 class="text-4xl font-bold text-gray-800 text-center">
-                Fotos del Producto
-              </h3>
-              <div
-                class="relative bg-gray-100 rounded-2xl aspect-video flex items-center justify-center overflow-hidden shadow-inner w-full max-w-2xl mx-auto"
-              >
-                <ng-container *ngIf="products.length > 0; else noImage">
-                  <img
-                    [src]="products[productCarouselIndex]?.imageUrl"
-                    [alt]="products[productCarouselIndex]?.name"
-                    class="object-contain w-full h-full"
-                  />
-                  <!-- Flechas de navegación -->
-                  <button
-                    class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
-                    (click)="prevProduct()"
-                    [disabled]="products.length < 2"
-                  >
-                    <mat-icon>chevron_left</mat-icon>
-                  </button>
-                  <button
-                    class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
-                    (click)="nextProduct()"
-                    [disabled]="products.length < 2"
-                  >
-                    <mat-icon>chevron_right</mat-icon>
-                  </button>
-                </ng-container>
-                <ng-template #noImage>
-                  <p class="text-gray-500 text-xl">No hay imagen disponible</p>
-                </ng-template>
-              </div>
-              <!-- Info del producto seleccionado -->
-              <ng-container *ngIf="products.length > 0">
-                <div class="mt-4 text-center w-full">
-                  <h4 class="text-3xl font-extrabold text-gray-800 mb-2">
-                    {{ products[productCarouselIndex]?.name }}
-                  </h4>
-                  <p class="text-xl text-gray-600 mb-4">
-                    {{ products[productCarouselIndex]?.description }}
-                  </p>
-                  <span
-                    class="text-4xl font-extrabold text-green-600 block mb-2"
-                  >
-                    {{
-                      formatPrice(
-                        products[productCarouselIndex]?.salePrice || 0
-                      )
-                    }}
-                  </span>
-                </div>
-              </ng-container>
+  <div class="flex flex-col items-center space-y-8">
+    <h3 class="text-4xl font-bold text-gray-800 text-center">Fotos del Producto</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <!-- Columna de imagen (izquierda) -->
+      <div class="relative bg-gray-100 rounded-2xl aspect-video flex items-center justify-center overflow-hidden shadow-inner">
+        <ng-container *ngIf="products.length > 0; else noImage">
+          <img
+            [src]="currentProduct?.imageUrl"
+            [alt]="currentProduct?.name"
+            class="object-contain w-full h-full"
+          />
+          <!-- Flechas de navegación -->
+          <button
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
+            (click)="prevProduct()"
+            [disabled]="products.length < 2"
+          >
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <button
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-700 p-2 rounded-full shadow"
+            (click)="nextProduct()"
+            [disabled]="products.length < 2"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </ng-container>
+        <ng-template #noImage>
+          <p class="text-gray-500 text-xl">No hay imagen disponible</p>
+        </ng-template>
+      </div>
+      
+      <!-- Columna de descripción (derecha) -->
+      <div *ngIf="currentProduct" class="bg-gray-50 p-6 rounded-xl shadow-md">
+        <h4 class="text-2xl font-bold text-gray-800 mb-3 border-b pb-2 border-gray-200">
+          {{ currentProduct.name }}
+        </h4>
+        <div class="space-y-4">
+          <div>
+            <h5 class="text-lg font-semibold text-green-700 flex items-center">
+              <mat-icon class="mr-2 text-green-600">description</mat-icon>
+              Descripción del Producto
+            </h5>
+            <p class="text-gray-700 mt-2 leading-relaxed">{{ currentProduct.description }}</p>
+          </div>
+          
+          <div class="bg-green-50 p-4 rounded-lg">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-700 font-medium">Stock disponible:</span>
+              <span class="text-green-800 font-bold">{{ currentProduct.stock }} unidades</span>
             </div>
-            <br />
-            <br />
-            <br />
-            <div
-              class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500"
-            >
-              <div
-                class="px-8 py-6 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900"
-              >
-                <h3 class="text-2xl font-bold text-white flex items-center">
-                  <mat-icon class="mr-4 text-3xl">flash_on</mat-icon>
-                  Atajos Rápidos
-                </h3>
-              </div>
-              <div class="p-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <button
-                    class="group bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-                    (click)="goTo('/quotations')"
-                  >
-                    <div
-                      class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300"
-                    >
-                      <mat-icon class="text-white text-2xl"
-                        >assignment</mat-icon
-                      >
-                    </div>
-                    <span class="text-lg font-semibold">Cotizar</span>
-                  </button>
-
-                  <button
-                    class="group bg-gradient-to-br from-green-600 via-green-700 to-green-800 hover:from-green-700 hover:via-green-800 hover:to-green-900 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-                    (click)="goTo('/faqs')"
-                  >
-                    <div
-                      class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300"
-                    >
-                      <mat-icon class="text-white text-2xl">help</mat-icon>
-                    </div>
-                    <span class="text-lg font-semibold"
-                      >Preguntas Frecuentes</span
-                    >
-                  </button>
-
-                  <button
-                    class="group bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 text-white font-bold py-6 px-8 rounded-2xl transition-all duration-500 flex items-center justify-center gap-4 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-                    (click)="goTo('/customer-reviews')"
-                  >
-                    <div
-                      class="bg-white bg-opacity-20 p-3 rounded-2xl group-hover:bg-opacity-30 transition-all duration-300"
-                    >
-                      <mat-icon class="text-white text-2xl">reviews</mat-icon>
-                    </div>
-                    <span class="text-lg font-semibold">Reseñas</span>
-                  </button>
-                </div>
-              </div>
+            <div class="flex justify-between items-center mt-2">
+              <span class="text-gray-700 font-medium">Precio:</span>
+              <span class="text-2xl font-bold text-green-600">{{ formatPrice(currentProduct.salePrice) }}</span>
             </div>
           </div>
+          
+          <button 
+            *ngIf="isAuthorizedClient() && currentProduct.status === 1 && currentProduct.stock > 0"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            (click)="openPurchaseModal(currentProduct)">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
           <!-- ...existing code... -->
         </div>
