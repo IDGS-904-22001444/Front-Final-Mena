@@ -14,13 +14,18 @@ import { Sale } from '../../interfaces/sale';
 export class SaleListComponent {
   @Input({ required: true }) sales!: Sale[] | null;
   @Input() isAdmin: boolean = false;
+  @Input() selectedSaleId: number | null = null;
+  @Output() saleSelected = new EventEmitter<number>();
   @Output() editSale = new EventEmitter<Sale>();
   @Output() deleteSale = new EventEmitter<number>();
-  @Output() viewSaleDetail = new EventEmitter<Sale>();
-
+  @Input() showSaleDetail: boolean = false;
 
   trackBySaleId(index: number, sale: Sale): number {
     return sale.id;
+  }
+
+  onSelectSale(saleId: number) {
+    this.saleSelected.emit(saleId);
   }
 
   edit(sale: Sale) {
@@ -47,10 +52,6 @@ export class SaleListComponent {
       default: return 'Desconocido';
     }
   }
-
-  onViewDetail(sale: Sale) {
-  this.viewSaleDetail.emit(sale);
-}
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {

@@ -53,7 +53,7 @@
       @for (sale of sales; track trackBySaleId($index, sale)) {
       <tr
         class="hover:bg-gray-50 transition-colors cursor-pointer"
-        (click)="onViewDetail(sale)"
+        (click)="onSelectSale(sale.id)"
       >
         <td class="px-6 py-4 whitespace-nowrap">
           <div class="flex items-center">
@@ -130,7 +130,7 @@
           <div class="flex space-x-3">
             <button
               type="button"
-              (click)="edit(sale)"
+              (click)="edit(sale); $event.stopPropagation()"
               class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors flex items-center"
               title="Editar venta"
             >
@@ -138,7 +138,7 @@
             </button>
             <button
               type="button"
-              (click)="delete(sale.id)"
+              (click)="delete(sale.id); $event.stopPropagation()"
               class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors flex items-center"
               title="Eliminar venta"
             >
@@ -147,6 +147,31 @@
           </div>
         </td>
         }
+      </tr>
+      <!-- Detalle expandido -->
+      <tr *ngIf="selectedSaleId === sale.id && !showSaleDetail">
+        <td colspan="8" class="bg-gray-50 px-6 py-4">
+          <div class="flex flex-col md:flex-row gap-6">
+            <div>
+              <h4 class="font-bold text-lg mb-2">Detalle de la compra</h4>
+              <p><strong>Producto:</strong> {{ sale.product?.name }}</p>
+              <p>
+                <strong>Descripción:</strong> {{ sale.product?.description }}
+              </p>
+              <p><strong>Cantidad:</strong> {{ sale.quantity }}</p>
+              <p>
+                <strong>Precio unitario:</strong>
+                {{ formatPrice(sale.product?.salePrice || 0) }}
+              </p>
+              <p><strong>Total:</strong> {{ formatPrice(sale.total) }}</p>
+              <p>
+                <strong>Fecha de venta:</strong> {{ formatDate(sale.saleDate) }}
+              </p>
+              <p><strong>Estado:</strong> {{ getStatusText(sale.status) }}</p>
+            </div>
+            <!-- Puedes agregar más detalles aquí si lo necesitas -->
+          </div>
+        </td>
       </tr>
       }
     </tbody>

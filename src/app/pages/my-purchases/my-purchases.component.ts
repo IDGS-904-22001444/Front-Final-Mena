@@ -15,18 +15,35 @@ import { SaleListComponent } from '../../components/sale-list/sale-list.componen
     AsyncPipe,
     MatIconModule,
     MatButtonModule,
-    SaleListComponent
+    SaleListComponent,
   ],
   templateUrl: './my-purchases.component.html',
-  styleUrl: './my-purchases.component.css'
+  styleUrl: './my-purchases.component.css',
 })
 export class MyPurchasesComponent implements OnInit {
   saleService = inject(SaleService);
-  
+
   myPurchases$!: Observable<Sale[]>;
+  selectedSaleId: number | null = null;
+  showSaleDetail: boolean = false;
 
   ngOnInit() {
     this.loadMyPurchases();
+  }
+
+  selectSale(saleId: number) {
+    if (this.selectedSaleId === saleId && this.showSaleDetail) {
+      this.showSaleDetail = false;
+      this.selectedSaleId = null;
+    } else {
+      this.selectedSaleId = saleId;
+      this.showSaleDetail = true;
+    }
+  }
+
+  closeSaleDetail() {
+    this.showSaleDetail = false;
+    this.selectedSaleId = null;
   }
 
   loadMyPurchases() {
@@ -39,21 +56,23 @@ export class MyPurchasesComponent implements OnInit {
   }
 
   getTotalSpent(purchases: Sale[] | null): number {
-    return purchases?.reduce((total, purchase) => total + purchase.total, 0) || 0;
+    return (
+      purchases?.reduce((total, purchase) => total + purchase.total, 0) || 0
+    );
   }
 
   getCompletedPurchases(purchases: Sale[] | null): number {
-    return purchases?.filter(p => p.status === 1).length || 0;
+    return purchases?.filter((p) => p.status === 1).length || 0;
   }
 
   getPendingPurchases(purchases: Sale[] | null): number {
-    return purchases?.filter(p => p.status === 0).length || 0;
+    return purchases?.filter((p) => p.status === 0).length || 0;
   }
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
-      currency: 'MXN'
+      currency: 'MXN',
     }).format(price);
   }
 }

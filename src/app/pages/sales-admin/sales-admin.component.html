@@ -90,10 +90,12 @@
         <app-sale-list
           [sales]="sales$ | async"
           [isAdmin]="true"
+          [selectedSaleId]="selectedSale?.id ?? null"
+          [showSaleDetail]="showSaleDetail"
+          (saleSelected)="onSaleSelected($event)"
           (editSale)="editSale($event)"
           (deleteSale)="deleteSale($event)"
-          (viewSaleDetail)="viewSaleDetail($event)"
-        />
+        ></app-sale-list>
       </div>
 
       <!-- Modal o sección de detalle -->

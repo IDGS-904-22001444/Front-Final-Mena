@@ -26,8 +26,8 @@ import { SaleListComponent } from '../../components/sale-list/sale-list.componen
 export class SalesAdminComponent implements OnInit {
   saleService = inject(SaleService);
   snackBar = inject(MatSnackBar);
-  
-   sales$!: Observable<Sale[]>;
+
+  sales$!: Observable<Sale[]>;
   selectedSale: Sale | null = null;
   showSaleDetail = false;
   isLoadingDetail = false;
@@ -48,7 +48,7 @@ export class SalesAdminComponent implements OnInit {
   deleteSale(id: number) {
     if (confirm('¿Estás seguro de que quieres eliminar esta venta?')) {
       this.saleService.deleteSale(id).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadSales();
           this.snackBar.open('Venta eliminada exitosamente', 'Cerrar', {
             duration: 3000,
@@ -61,6 +61,22 @@ export class SalesAdminComponent implements OnInit {
         },
       });
     }
+  }
+
+  // Nuevo método para seleccionar y mostrar detalle
+  onSaleSelected(saleId: number) {
+    this.isLoadingDetail = true;
+    this.saleService.getSale(saleId).subscribe({
+      next: (detail) => {
+        this.selectedSale = detail;
+        this.showSaleDetail = true;
+        this.isLoadingDetail = false;
+      },
+      error: () => {
+        this.snackBar.open('Error al cargar el detalle de la venta', 'Cerrar', { duration: 3000 });
+        this.isLoadingDetail = false;
+      }
+    });
   }
 
   // Métodos para estadísticas del admin
@@ -85,21 +101,6 @@ export class SalesAdminComponent implements OnInit {
       style: 'currency',
       currency: 'MXN'
     }).format(price);
-  }
-
-  viewSaleDetail(sale: Sale) {
-    this.isLoadingDetail = true;
-    this.saleService.getSale(sale.id).subscribe({
-      next: (detail) => {
-        this.selectedSale = detail;
-        this.showSaleDetail = true;
-        this.isLoadingDetail = false;
-      },
-      error: () => {
-        this.snackBar.open('Error al cargar el detalle de la venta', 'Cerrar', { duration: 3000 });
-        this.isLoadingDetail = false;
-      }
-    });
   }
 
   closeSaleDetail() {

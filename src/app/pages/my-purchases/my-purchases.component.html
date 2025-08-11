@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <!-- Lista de compras -->
+    <!-- Lista de compras SIEMPRE visible -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200">
       <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
         <div class="flex items-center justify-between">
@@ -84,7 +84,62 @@
         <app-sale-list
           [sales]="myPurchases$ | async"
           [isAdmin]="false"
-        />
+          [selectedSaleId]="selectedSaleId"
+          [showSaleDetail]="showSaleDetail"
+          (saleSelected)="selectSale($event)">
+        </app-sale-list>
+      </div>
+
+      <!-- Modal de detalle ENCIMA de la tabla -->
+      <div
+        *ngIf="showSaleDetail && selectedSaleId"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 relative">
+          <button
+            (click)="closeSaleDetail()"
+            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          <h3 class="text-2xl font-bold mb-4">
+            Detalle de Compra #{{ selectedSaleId }}
+          </h3>
+          <ng-container *ngIf="myPurchases$ | async as purchases">
+            <ng-container *ngFor="let sale of purchases">
+              <ng-container *ngIf="sale.id === selectedSaleId">
+                <div class="mb-4">
+                  <span class="font-semibold text-gray-700">Producto:</span>
+                  <span class="ml-2">{{ sale.product?.name }}</span>
+                  <div class="text-sm text-gray-500">
+                    {{ sale.product?.description }}
+                  </div>
+                  <div class="text-xs text-gray-400">
+                    Precio unitario: {{ formatPrice(sale.product?.salePrice || 0) }}
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <span class="font-semibold text-gray-700">Cantidad:</span>
+                  <span class="ml-2">{{ sale.quantity }}</span>
+                </div>
+                <div class="mb-4">
+                  <span class="font-semibold text-gray-700">Total:</span>
+                  <span class="ml-2">{{ formatPrice(sale.total) }}</span>
+                </div>
+                <div class="mb-4">
+                  <span class="font-semibold text-gray-700">Fecha de Compra:</span>
+                  <span class="ml-2">{{ sale.saleDate | date : "medium" }}</span>
+                </div>
+                <div class="mb-4">
+                  <span class="font-semibold text-gray-700">Estado:</span>
+                  <span class="ml-2">{{
+                    sale.status === 1 ? "Completada" : "Pendiente"
+                  }}</span>
+                </div>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>
