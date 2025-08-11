@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Quotation } from '../interfaces/quotation';
 import { QuotationRequest } from '../interfaces/quotation-request';
 
 @Injectable({
@@ -14,11 +13,11 @@ export class QuotationService {
   constructor(private http: HttpClient) {}
 
   createQuotation(quotation: QuotationRequest): Observable<any> {
-    return this.http.post(this.apiUrl, quotation);
-  }
+  return this.http.post('https://localhost:5000/api/QuotationRequests', quotation);
+}
 
-  getAllQuotations(): Observable<Quotation[]> {
-    return this.http.get<Quotation[]>(this.apiUrl);
+  getAllQuotations(): Observable<QuotationRequest[]> {
+    return this.http.get<QuotationRequest[]>(this.apiUrl);
   }
 
   updateQuotationStatus(id: number, status: number): Observable<any> {

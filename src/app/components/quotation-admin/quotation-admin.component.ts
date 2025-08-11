@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import { Quotation } from '../../interfaces/quotation';
+import { QuotationRequest } from '../../interfaces/quotation-request';
 
 @Component({
   selector: 'app-quotations-admin',
@@ -20,8 +20,8 @@ import { Quotation } from '../../interfaces/quotation';
   templateUrl: './quotation-admin.component.html'
 })
 export class QuotationsAdminComponent implements OnInit {
-  quotations$!: Observable<Quotation[]>;
-  selectedQuotation: Quotation | null = null;
+  quotations$!: Observable<QuotationRequest[]>;
+  selectedQuotation: QuotationRequest | null = null;
 
   constructor(
     private quotationService: QuotationService,
@@ -36,11 +36,11 @@ export class QuotationsAdminComponent implements OnInit {
     this.quotations$ = this.quotationService.getAllQuotations();
   }
 
-  showQuotationDetails(quotation: Quotation) {
+  showQuotationDetails(quotation: QuotationRequest) {
     this.selectedQuotation = quotation;
   }
 
-  respondToQuotation(quotation: Quotation) {
+  respondToQuotation(quotation: QuotationRequest) {
   // Construir el mailto URL con los datos del cliente
   const subject = encodeURIComponent(`Respuesta a su cotización - ReptiTrack`);
   const body = encodeURIComponent(

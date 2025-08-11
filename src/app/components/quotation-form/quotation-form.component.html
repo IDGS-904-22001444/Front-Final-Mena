@@ -1,106 +1,145 @@
-<div class="min-h-screen bg-gray-100 flex items-center justify-center w-full py-8">
-  <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()" class="w-full max-w-7xl mx-auto px-4">
+<div
+  class="min-h-screen bg-gray-100 flex items-center justify-center w-full py-8"
+>
+  <form
+    [formGroup]="quotationForm"
+    (ngSubmit)="onSubmit()"
+    class="w-full max-w-7xl mx-auto px-4"
+  >
     <div class="bg-white rounded-xl shadow-lg p-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Solicitar Cotización</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+        Solicitar Cotización
+      </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div class="relative">
-          <input 
+          <input
             type="text"
             formControlName="firstName"
             placeholder="Nombre*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('firstName')?.touched && quotationForm.get('firstName')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('firstName')?.touched && quotationForm.get('firstName')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative">
-          <input 
+          <input
             type="text"
             formControlName="lastName"
             placeholder="Apellidos*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('lastName')?.touched && quotationForm.get('lastName')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('lastName')?.touched && quotationForm.get('lastName')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative">
-          <input 
+          <input
             type="tel"
             formControlName="phone"
             placeholder="Teléfono*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('phone')?.touched && quotationForm.get('phone')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('phone')?.touched && quotationForm.get('phone')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative">
-          <input 
+          <input
             type="email"
             formControlName="email"
             placeholder="Email*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('email')?.touched && quotationForm.get('email')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('email')?.touched && quotationForm.get('email')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative">
-          <select 
+          <select
             formControlName="country"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg appearance-none"
           >
             <option value="" disabled selected>País*</option>
             <option value="MX">México</option>
-            </select>
-          <div *ngIf="quotationForm.get('country')?.touched && quotationForm.get('country')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          </select>
+          <div
+            *ngIf="quotationForm.get('country')?.touched && quotationForm.get('country')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative">
-          <input 
+          <input
             type="text"
             formControlName="region"
             placeholder="Región/Localidad*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('region')?.touched && quotationForm.get('region')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('region')?.touched && quotationForm.get('region')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
 
         <div class="relative col-span-full">
-          <input 
+          <input
             type="text"
             formControlName="company"
             placeholder="Empresa*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('company')?.touched && quotationForm.get('company')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('company')?.touched && quotationForm.get('company')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, rellena este campo.
           </div>
         </div>
       </div>
 
+<div class="relative mb-6">
+  <label class="block text-gray-700 font-semibold mb-2">Producto base a cotizar:</label>
+  <select 
+    formControlName="productId"
+    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg appearance-none"
+    required
+  >
+    <option value="" disabled selected>Selecciona un producto*</option>
+    <option *ngFor="let product of products" [value]="product.productId">
+      {{ product.name }} - {{ product.description }} ({{ product.salePrice | currency:'MXN' }})
+    </option>
+  </select>
+  <div *ngIf="quotationForm.get('productId')?.touched && quotationForm.get('productId')?.errors?.['required']" 
+       class="text-red-500 text-sm mt-1">
+    Por favor, selecciona un producto.
+  </div>
+</div>
       <div class="mb-6">
         <p class="text-gray-700 font-semibold mb-3">Tipo de Animal:</p>
         <div class="relative">
-          <select 
+          <select
             formControlName="animalType"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg appearance-none"
             (change)="onAnimalTypeChange($event)"
@@ -111,21 +150,28 @@
             <option value="tarantula">Tarántulas</option>
             <option value="other">Otro (especificar)</option>
           </select>
-          <div *ngIf="quotationForm.get('animalType')?.touched && quotationForm.get('animalType')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('animalType')?.touched && quotationForm.get('animalType')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, selecciona un tipo de animal.
           </div>
         </div>
 
-        <div *ngIf="quotationForm.get('animalType')?.value === 'other'" class="mt-4">
-          <input 
+        <div
+          *ngIf="quotationForm.get('animalType')?.value === 'other'"
+          class="mt-4"
+        >
+          <input
             type="text"
             formControlName="otherAnimal"
             placeholder="Especifica el tipo de animal*"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg"
           />
-          <div *ngIf="quotationForm.get('otherAnimal')?.touched && quotationForm.get('otherAnimal')?.errors?.['required']" 
-               class="text-red-500 text-sm mt-1">
+          <div
+            *ngIf="quotationForm.get('otherAnimal')?.touched && quotationForm.get('otherAnimal')?.errors?.['required']"
+            class="text-red-500 text-sm mt-1"
+          >
             Por favor, especifica el tipo de animal.
           </div>
         </div>
@@ -133,18 +179,29 @@
 
       <div class="mb-6">
         <p class="text-gray-700 font-semibold mb-3">Necesidad:</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" formGroupName="needs">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+          formGroupName="needs"
+        >
           <div class="flex items-center space-x-2">
-            <mat-checkbox formControlName="terrariumMonitoring">Sistema de Monitoreo de Hábitats para Reptiles</mat-checkbox>
+            <mat-checkbox formControlName="terrariumMonitoring"
+              >Sistema de Monitoreo de Hábitats para Reptiles</mat-checkbox
+            >
           </div>
           <div class="flex items-center space-x-2">
-            <mat-checkbox formControlName="biologicalResearch">Investigación en biología/ecología</mat-checkbox>
+            <mat-checkbox formControlName="biologicalResearch"
+              >Investigación en biología/ecología</mat-checkbox
+            >
           </div>
           <div class="flex items-center space-x-2">
-            <mat-checkbox formControlName="zooOrAquarium">Uso en Zoológicos y Acuarios</mat-checkbox>
+            <mat-checkbox formControlName="zooOrAquarium"
+              >Uso en Zoológicos y Acuarios</mat-checkbox
+            >
           </div>
           <div class="flex items-center space-x-2">
-            <mat-checkbox formControlName="naturalReserves">Uso en Reservas Naturales</mat-checkbox>
+            <mat-checkbox formControlName="naturalReserves"
+              >Uso en Reservas Naturales</mat-checkbox
+            >
           </div>
           <div class="flex items-center space-x-2">
             <mat-checkbox formControlName="other">Otro</mat-checkbox>
@@ -153,14 +210,16 @@
       </div>
 
       <div class="mb-6">
-        <textarea 
+        <textarea
           formControlName="comments"
           placeholder="Comentarios*"
           rows="4"
           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg resize-none"
         ></textarea>
-        <div *ngIf="quotationForm.get('comments')?.touched && quotationForm.get('comments')?.errors?.['required']" 
-             class="text-red-500 text-sm mt-1">
+        <div
+          *ngIf="quotationForm.get('comments')?.touched && quotationForm.get('comments')?.errors?.['required']"
+          class="text-red-500 text-sm mt-1"
+        >
           Por favor, rellena este campo.
         </div>
       </div>
@@ -168,23 +227,25 @@
       <div class="mb-6">
         <div class="flex items-center space-x-2">
           <mat-checkbox formControlName="acceptsInfo">
-            Acepto que Reptitrack trate mis datos para enviarme información sobre sus productos y servicios.
+            Acepto que Reptitrack trate mis datos para enviarme información
+            sobre sus productos y servicios.
           </mat-checkbox>
         </div>
-        <div *ngIf="quotationForm.get('acceptsInfo')?.touched && quotationForm.get('acceptsInfo')?.errors?.['required']" 
-             class="text-red-500 text-sm mt-1">
+        <div
+          *ngIf="quotationForm.get('acceptsInfo')?.touched && quotationForm.get('acceptsInfo')?.errors?.['required']"
+          class="text-red-500 text-sm mt-1"
+        >
           Debes aceptar los términos y condiciones.
         </div>
       </div>
-      
 
-      <button 
+      <button
         type="submit"
         [disabled]="!quotationForm.valid"
-        class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 rounded-lg transition-colors">
+        class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 rounded-lg transition-colors"
+      >
         Enviar
       </button>
     </div>
   </form>
 </div>
-

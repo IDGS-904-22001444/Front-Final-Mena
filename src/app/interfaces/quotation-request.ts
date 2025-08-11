@@ -1,4 +1,5 @@
 export interface QuotationRequest {
+  productId: number;
   firstName: string;
   lastName: string;
   phone: string;

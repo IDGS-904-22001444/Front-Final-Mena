@@ -67,15 +67,6 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div class="flex space-x-3">
-                    @if (canEditUser(user)) {
-                      <button 
-                        type="button"
-                        (click)="editUser(user)" 
-                        class="text-blue-600 hover:text-blue-900 flex items-center transition-colors"
-                        title="Editar usuario">
-                        <mat-icon class="w-5 h-5">edit</mat-icon>
-                      </button>
-                    }
                     @if (canDeleteUser(user)) {
                       <button 
                         type="button"
