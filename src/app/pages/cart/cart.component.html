@@ -1,3 +1,4 @@
+<!-- Carrito Modal -->
 <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeCart()">
   <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
     <!-- Header -->
@@ -108,5 +109,15 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal de tarjeta de crédito -->
+<div *ngIf="showPaymentForm" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[100]">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4" (click)="$event.stopPropagation()">
+    <app-credit-card-form
+  (cardSubmitted)="onCardSubmitted($event)"
+  (cancelled)="onPaymentCancelled()">
+</app-credit-card-form>
   </div>
 </div>

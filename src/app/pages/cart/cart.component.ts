@@ -8,7 +8,6 @@ import { CartService, CartItem } from '../../services/cart.service';
 import { CreditCardFormComponent, CreditCardData } from '../../components/credit-card-form/credit-card-form.component';
 import Swal from 'sweetalert2';
 
-
 @Component({
   selector: 'app-cart',
   standalone: true,
@@ -19,6 +18,8 @@ import Swal from 'sweetalert2';
 export class CartComponent implements OnInit, OnDestroy {
   @Input() showModal: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
+  @Output() paymentCancelled = new EventEmitter<void>();
+
 
   cartService = inject(CartService);
   
@@ -31,7 +32,6 @@ export class CartComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
-    // Suscribirse a los observables del servicio
     this.cartService.cart$
       .pipe(takeUntil(this.destroy$))
       .subscribe(cart => this.cart = cart);
@@ -54,7 +54,6 @@ export class CartComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Métodos del carrito
   removeFromCart(productId: number): void {
     this.cartService.removeFromCart(productId);
   }
@@ -75,28 +74,25 @@ export class CartComponent implements OnInit, OnDestroy {
     this.cartService.clearCart();
   }
 
-  async confirmPurchase() {
+  confirmPurchase(): void {
     this.showPaymentForm = true;
   }
 
-  onCardSubmitted(cardData: CreditCardData) {
+  onCardSubmitted(cardData: CreditCardData): void {
     this.processPayment(cardData);
   }
 
-  onPaymentCancelled() {
+  onPaymentCancelled(): void {
     this.showPaymentForm = false;
   }
 
   async processPayment(cardData: CreditCardData) {
     this.isLoading = true;
     try {
-      // Aquí normalmente enviarías los datos de la tarjeta a tu backend
-      // Por ahora simulamos el procesamiento
+      // Simula el procesamiento de pago (aquí deberías llamar a tu API real)
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      await this.cartService.confirmPurchase();
-      
-      // Mostrar alerta de éxito
+      await this.cartService.confirmPurchase(); // Aquí deberías pasar cardData si tu API lo requiere
+
       Swal.fire({
         icon: 'success',
         title: '¡Pago procesado con éxito!',
@@ -107,7 +103,7 @@ export class CartComponent implements OnInit, OnDestroy {
         timer: 3000,
         timerProgressBar: true
       });
-      
+
       this.cartSuccess = 'Compra realizada con éxito';
       this.cart = [];
       this.showPaymentForm = false;
@@ -131,7 +127,6 @@ export class CartComponent implements OnInit, OnDestroy {
     this.closeModal.emit();
   }
 
-  // Utilidades
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
@@ -147,8 +142,13 @@ export class CartComponent implements OnInit, OnDestroy {
     return this.cartService.getItemsCount();
   }
 
-  // FUNCIÓN TRACKBY QUE FALTABA
   trackByProductId(index: number, item: CartItem): number {
     return item.product.productId;
   }
+
+
+
+onCancel(): void {
+  this.paymentCancelled.emit();
+}
 }
